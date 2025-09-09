@@ -1,0 +1,35 @@
+# Development Node.js Backend Dockerfile
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app/backend
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    bash \
+    git \
+    && rm -rf /var/cache/apk/*
+
+# Copy package files
+COPY package.json ./
+COPY yarn.lock ./
+
+# Install dependencies (including dev dependencies)
+RUN yarn install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 8001
+
+# Install nodemon globally for development
+RUN yarn global add nodemon
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+# Start with nodemon for development
+CMD ["yarn", "dev"]

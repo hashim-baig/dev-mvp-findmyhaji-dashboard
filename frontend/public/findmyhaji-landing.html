@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindMyHaji - Your Pilgrimage. Connected.</title>
+    <meta name="description" content="FindMyHaji connects pilgrims, families, and providers during Hajj and Umrah with GPS tracking, real-time communication, and spiritual guidance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #0f4c3a;
+            --light-green: #10b981;
+            --gold: #d4af37;
+            --light-gold: #f7e98e;
+            --beige: #f5f1eb;
+            --cream: #faf8f3;
+            --white: #ffffff;
+            --dark-text: #1f2937;
+            --medium-text: #4b5563;
+            --light-text: #6b7280;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+            --gradient-gold: linear-gradient(135deg, var(--gold), var(--light-gold));
+            --gradient-green: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--dark-text);
+            background-color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+            position: relative;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--medium-text);
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(15, 76, 58, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-gold);
+            color: var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-green);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -10%;
+            width: 60%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Cpath d='M500 100c100 0 200 50 250 150s50 200 0 300-150 150-250 150-200-50-250-150-50-200 0-300 150-150 250-150z' fill='%23d4af37' opacity='0.1'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            animation: rotate 20s infinite linear;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text {
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-greeting {
+            font-size: 1.125rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--medium-text);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .kaaba-animation {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .kaaba {
+            width: 120px;
+            height: 120px;
+            background: var(--primary-green);
+            border-radius: 8px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 10px 30px var(--shadow-lg);
+        }
+
+        .kaaba::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 10px;
+            width: 100px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .pilgrims {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pilgrim {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: tawaf 8s infinite linear;
+        }
+
+        .pilgrim:nth-child(1) { animation-delay: 0s; }
+        .pilgrim:nth-child(2) { animation-delay: -2s; }
+        .pilgrim:nth-child(3) { animation-delay: -4s; }
+        .pilgrim:nth-child(4) { animation-delay: -6s; }
+
+        /* What is FindMyHaji Section */
+        .about {
+            background: var(--white);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.125rem;
+            color: var(--medium-text);
+        }
+
+        .about-visual {
+            position: relative;
+            padding: 2rem;
+        }
+
+        .feature-icons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--beige);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-icon:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .feature-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--dark-text);
+        }
+
+        /* Mission & Vision */
+        .mission {
+            background: var(--gradient-green);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .mission .section-title,
+        .mission .section-subtitle {
+            color: var(--white);
+        }
+
+        .mission-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-top: 3rem;
+        }
+
+        .mission-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--light-gold);
+        }
+
+        .mission-item p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+
+        /* Platform Breakdown */
+        .platform {
+            background: var(--beige);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .platform-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-gold);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--shadow-lg);
+        }
+
+        .platform-card svg {
+            width: 60px;
+            height: 60px;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+        }
+
+        .platform-card p {
+            color: var(--medium-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-features {
+            list-style: none;
+        }
+
+        .platform-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--medium-text);
+            font-size: 0.875rem;
+        }
+
+        .platform-features li::before {
+            content: '✓';
+            color: var(--light-green);
+            font-weight: bold;
+        }
+
+        /* Key Features */
+        .features {
+            background: var(--white);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-radius: 12px;
+            background: var(--cream);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: var(--beige);
+            transform: translateY(-5px);
+        }
+
+        .feature-card svg {
+            width: 50px;
+            height: 50px;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+        }
+
+        .feature-card p {
+            color: var(--medium-text);
+            font-size: 0.875rem;
+        }
+
+        /* Who It's For */
+        .personas {
+            background: var(--beige);
+        }
+
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .persona-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px var(--shadow-lg);
+        }
+
+        .persona-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .persona-avatar svg {
+            width: 40px;
+            height: 40px;
+            color: var(--white);
+        }
+
+        .persona-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+        }
+
+        .persona-card p {
+            color: var(--medium-text);
+            line-height: 1.6;
+        }
+
+        /* Pricing */
+        .pricing {
+            background: var(--white);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: var(--cream);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            background: var(--gradient-green);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured .pricing-price {
+            color: var(--light-gold);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--shadow-lg);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .pricing-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--primary-green);
+        }
+
+        .pricing-period {
+            font-size: 0.875rem;
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--light-green);
+            font-weight: bold;
+        }
+
+        /* Screenshots */
+        .screenshots {
+            background: var(--beige);
+        }
+
+        .screenshots-container {
+            overflow-x: auto;
+            padding: 2rem 0;
+        }
+
+        .screenshots-grid {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0 1rem;
+            min-width: max-content;
+        }
+
+        .screenshot-item {
+            flex: 0 0 250px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: 0 10px 30px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--shadow-lg);
+        }
+
+        .screenshot-mockup {
+            width: 100%;
+            height: 400px;
+            background: var(--gradient-green);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screenshot-mockup::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--white);
+            opacity: 0.3;
+            border-radius: 2px;
+        }
+
+        .screenshot-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            text-align: center;
+            color: var(--dark-text);
+        }
+
+        /* Blog Section */
+        .blog {
+            background: var(--white);
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .blog-card {
+            background: var(--cream);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px var(--shadow-lg);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            background: var(--gradient-gold);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blog-image svg {
+            width: 50px;
+            height: 50px;
+            color: var(--white);
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+        }
+
+        .blog-excerpt {
+            color: var(--medium-text);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .blog-meta {
+            font-size: 0.75rem;
+            color: var(--light-text);
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: var(--gradient-green);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .newsletter .section-title,
+        .newsletter .section-subtitle {
+            color: var(--white);
+        }
+
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            background: var(--white);
+            color: var(--dark-text);
+        }
+
+        .newsletter-input::placeholder {
+            color: var(--light-text);
+        }
+
+        .newsletter-btn {
+            background: var(--gradient-gold);
+            color: var(--primary-green);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: var(--beige);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px var(--shadow);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            color: var(--medium-text);
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .testimonial-avatar svg {
+            width: 24px;
+            height: 24px;
+            color: var(--white);
+        }
+
+        .testimonial-info h4 {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-info p {
+            font-size: 0.875rem;
+            color: var(--light-text);
+        }
+
+        /* FAQ */
+        .faq {
+            background: var(--white);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--beige);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.5rem 0;
+            text-align: left;
+            background: none;
+            border: none;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--primary-green);
+        }
+
+        .faq-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: var(--medium-text);
+            line-height: 1.6;
+        }
+
+        .faq-answer-content {
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+
+        /* CTA */
+        .cta {
+            background: var(--gradient-green);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .cta .section-title {
+            color: var(--white);
+            font-size: 3rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta .btn-secondary {
+            background: var(--white);
+            color: var(--primary-green);
+        }
+
+        .cta .btn-secondary:hover {
+            background: var(--light-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--light-gold);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--light-gold);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes tawaf {
+            0% {
+                transform: rotate(0deg) translateX(150px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(150px) rotate(-360deg);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section {
+                padding: 2rem 0;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .about-content,
+            .mission-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .newsletter-input {
+                min-width: auto;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .kaaba-animation {
+                width: 200px;
+                height: 200px;
+            }
+
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+
+            .feature-icons {
+                grid-template-columns: 1fr;
+            }
+
+            .cta .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--gradient-gold);
+            z-index: 9999;
+            transition: width 0.3s ease;
+        }
+
+        /* Contact Form Styles */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--cream);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="#home" class="logo">FindMyHaji</a>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" class="btn btn-primary">Download App</a></li>
+                </ul>
+                <button class="mobile-menu-btn">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <p class="hero-greeting">Assalāmu 'Alaikum wa Rahmatullāhi wa Barakātuh</p>
+                    <h1 class="hero-title">Your Pilgrimage.<br>Connected.</h1>
+                    <p class="hero-subtitle">Experience peace of mind during your sacred journey. Keep your loved ones informed and stay connected with real-time tracking, emergency assistance, and spiritual guidance.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.07-.49-2.05-.49-3.16 0-1.38.63-2.11.53-3.08-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                            </svg>
+                            Download on App Store
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.92 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                            </svg>
+                            Get it on Google Play
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="kaaba-animation">
+                        <div class="kaaba"></div>
+                        <div class="pilgrims">
+                            <div class="pilgrim"></div>
+                            <div class="pilgrim"></div>
+                            <div class="pilgrim"></div>
+                            <div class="pilgrim"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is FindMyHaji Section -->
+    <section class="section about" id="about">
+        <div class="container">
+            <h2 class="section-title fade-in">What is FindMyHaji?</h2>
+            <p class="section-subtitle fade-in">Connecting hearts and souls across distances during the most sacred journey of a lifetime.</p>
+            
+            <div class="about-content">
+                <div class="about-text fade-in">
+                    <h3>Bridging Distance with Technology</h3>
+                    <p>FindMyHaji was born from a simple yet profound need – keeping families connected during Hajj and Umrah. When millions gather in the holy cities, staying in touch with loved ones becomes both crucial and challenging.</p>
+                    
+                    <p>Our platform serves three communities: pilgrims seeking guidance and safety, families yearning for updates from their loved ones, and service providers managing groups with care and responsibility.</p>
+                    
+                    <p>Through real-time location sharing, emergency alerts, ritual guidance, and seamless communication, we ensure that the spiritual focus remains undisturbed while practical concerns are addressed.</p>
+                    
+                    <a href="#features" class="btn btn-outline">Explore Features</a>
+                </div>
+                
+                <div class="about-visual fade-in">
+                    <div class="feature-icons">
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            <h4>Real-time GPS Tracking</h4>
+                        </div>
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <h4>Emergency SOS</h4>
+                        </div>
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2 1l-2 3v6h2v7h4z"/>
+                            </svg>
+                            <h4>Group Management</h4>
+                        </div>
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            <h4>Family Updates</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section class="section mission">
+        <div class="container">
+            <h2 class="section-title fade-in">Our Mission & Vision</h2>
+            <p class="section-subtitle fade-in">Guided by faith, empowered by technology</p>
+            
+            <div class="mission-content">
+                <div class="mission-item fade-in">
+                    <h3>🕌 Our Mission</h3>
+                    <p>To provide peace of mind to pilgrims and their families through innovative technology, ensuring safety, connectivity, and spiritual focus during the sacred journey of Hajj and Umrah.</p>
+                </div>
+                <div class="mission-item fade-in">
+                    <h3>🌟 Our Vision</h3>
+                    <p>To be the most trusted companion for Muslim pilgrims worldwide, bridging the gap between spiritual devotion and practical safety through seamless, respectful technology solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Breakdown -->
+    <section class="section platform">
+        <div class="container">
+            <h2 class="section-title fade-in">Platform Breakdown</h2>
+            <p class="section-subtitle fade-in">Three interconnected solutions for a complete pilgrimage experience</p>
+            
+            <div class="platform-grid">
+                <div class="platform-card fade-in">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 2c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm1.78 8.58C18.93 10.21 19 9.88 19 9.5S18.93 8.79 18.78 8.42L16.5 2.5c-.86-2.01-2.65-3.5-4.5-3.5S8.36.49 7.5 2.5L5.22 8.42C5.07 8.79 5 9.12 5 9.5s.07.71.22 1.08L12 22l6.78-11.42z"/>
+                    </svg>
+                    <h3>Pilgrim Mobile App</h3>
+                    <p>The essential companion for every pilgrim, providing guidance, safety, and connection throughout the sacred journey.</p>
+                    <ul class="platform-features">
+                        <li>Real-time GPS location sharing</li>
+                        <li>Emergency SOS with instant alerts</li>
+                        <li>Hajj & Umrah ritual checklist</li>
+                        <li>Digital Quran with audio</li>
+                        <li>Prayer times & Qibla direction</li>
+                        <li>Weather updates & crowd info</li>
+                        <li>Offline maps for holy sites</li>
+                    </ul>
+                </div>
+                
+                <div class="platform-card fade-in">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <h3>Provider/Agent App</h3>
+                    <p>Comprehensive tools for tour operators, group leaders, and service providers to manage and care for pilgrims effectively.</p>
+                    <ul class="platform-features">
+                        <li>Group member tracking & management</li>
+                        <li>Instant group communication</li>
+                        <li>Emergency response coordination</li>
+                        <li>Itinerary & schedule management</li>
+                        <li>Health & safety monitoring</li>
+                        <li>Real-time notifications</li>
+                        <li>Attendance & check-in system</li>
+                    </ul>
+                </div>
+                
+                <div class="platform-card fade-in">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 2v3H8V4h12zm-6 6v2h6v-2h-6zm0 3v2h6v-2h-6zM8 10h4v6H8v-6z"/>
+                    </svg>
+                    <h3>Web Management Portal</h3>
+                    <p>A powerful dashboard for families and administrators to monitor, manage, and stay connected with pilgrims.</p>
+                    <ul class="platform-features">
+                        <li>Family dashboard with live updates</li>
+                        <li>Journey timeline & photo sharing</li>
+                        <li>Multi-pilgrim tracking</li>
+                        <li>Communication history</li>
+                        <li>Emergency contact system</li>
+                        <li>Analytics & reporting</li>
+                        <li>Admin panel for organizations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features -->
+    <section class="section features" id="features">
+        <div class="container">
+            <h2 class="section-title fade-in">Key Features</h2>
+            <p class="section-subtitle fade-in">Everything you need for a safe and connected pilgrimage</p>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <h4>GPS Tracking</h4>
+                    <p>Real-time location sharing with families and group leaders</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.92 5.01C18.72 4.42 18.16 4 17.5 4h-11c-.66 0-1.22.42-1.42 1.01L3 11v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 15c-.83 0-1.5-.67-1.5-1.5S5.67 12 6.5 12s1.5.67 1.5 1.5S7.33 15 6.5 15zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 10l1.5-4.5h11L19 10H5z"/>
+                    </svg>
+                    <h4>SOS Alert</h4>
+                    <p>One-tap emergency assistance with location broadcast</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <h4>Ritual Checklist</h4>
+                    <p>Step-by-step guidance for Hajj and Umrah rituals</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <h4>Group Communication</h4>
+                    <p>Stay connected with your group and guides</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm2.78 3c-.8 0-1.54.37-2 1l-3.24 6.46c-.25.49-.74.81-1.28.81-.83 0-1.5-.67-1.5-1.5 0-.24.06-.47.17-.68L12.13 9H10c-1.1 0-2-.9-2-2V6c0-.55.45-1 1-1h4.52c.8 0 1.54.37 2 1l.71 1.42C16.46 7.71 16.72 8 17 8h2c.55 0 1 .45 1 1s-.45 1-1 1h-1.22zm-.75 11.97c-.42.42-1 .69-1.62.69-.83 0-1.54-.46-1.92-1.14L12.13 15H10c-1.1 0-2-.9-2-2s.9-2 2-2h3.15c.45 0 .85.24 1.07.63l1.48 2.96c.17.33.26.69.26 1.06 0 .62-.24 1.22-.67 1.66z"/>
+                    </svg>
+                    <h4>Family Dashboard</h4>
+                    <p>Real-time updates for families back home</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <h4>Prayer Times</h4>
+                    <p>Accurate prayer times and Qibla direction</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who It's For -->
+    <section class="section personas">
+        <div class="container">
+            <h2 class="section-title fade-in">Who It's For</h2>
+            <p class="section-subtitle fade-in">Serving every member of the pilgrimage community</p>
+            
+            <div class="personas-grid">
+                <div class="persona-card fade-in">
+                    <div class="persona-avatar">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                    </div>
+                    <h3>Pilgrims</h3>
+                    <p>Individual travelers and group members who want to stay safe, connected, and focused on their spiritual journey. Get real-time guidance, emergency assistance, and maintain contact with loved ones while performing sacred rituals.</p>
+                </div>
+                
+                <div class="persona-card fade-in">
+                    <div class="persona-avatar">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2 1l-2 3v6h2v7h4zm-12.5-11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S6 8.17 6 9s.67 1.5 1.5 1.5z"/>
+                        </svg>
+                    </div>
+                    <h3>Providers & Group Leaders</h3>
+                    <p>Tour operators, travel agents, and group leaders responsible for managing pilgrims. Monitor group members, coordinate activities, handle emergencies, and ensure everyone's safety and spiritual fulfillment throughout the journey.</p>
+                </div>
+                
+                <div class="persona-card fade-in">
+                    <div class="persona-avatar">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                        </svg>
+                    </div>
+                    <h3>Families</h3>
+                    <p>Loved ones back home who want to stay informed about their family members' pilgrimage progress. Receive real-time updates, track locations, get notified of important milestones, and maintain spiritual connection across distances.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Plans -->
+    <section class="section pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title fade-in">Subscription Plans</h2>
+            <p class="section-subtitle fade-in">Affordable access for every pilgrim</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card fade-in">
+                    <h3 class="pricing-title">Individual Pilgrim</h3>
+                    <div class="pricing-price">₹0</div>
+                    <p class="pricing-period">Free for life</p>
+                    <ul class="pricing-features">
+                        <li>GPS location tracking</li>
+                        <li>Emergency SOS alerts</li>
+                        <li>Basic ritual checklist</li>
+                        <li>Prayer times & Qibla</li>
+                        <li>Family updates</li>
+                        <li>Essential safety features</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline">Get Started</a>
+                </div>
+                
+                <div class="pricing-card featured fade-in">
+                    <h3 class="pricing-title">Group Access</h3>
+                    <div class="pricing-price">₹199</div>
+                    <p class="pricing-period">Per trip (one-time)</p>
+                    <ul class="pricing-features">
+                        <li>All Individual features</li>
+                        <li>Group management tools</li>
+                        <li>Real-time group tracking</li>
+                        <li>Instant group communication</li>
+                        <li>Advanced emergency coordination</li>
+                        <li>Itinerary management</li>
+                        <li>Group photos & memories</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary">Start Group Journey</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section class="section screenshots">
+        <div class="container">
+            <h2 class="section-title fade-in">App Screenshots</h2>
+            <p class="section-subtitle fade-in">See FindMyHaji in action</p>
+            
+            <div class="screenshots-container">
+                <div class="screenshots-grid">
+                    <div class="screenshot-item fade-in">
+                        <div class="screenshot-mockup">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="rgba(255,255,255,0.3)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                        </div>
+                        <h4 class="screenshot-title">Live Map Tracking</h4>
+                    </div>
+                    
+                    <div class="screenshot-item fade-in">
+                        <div class="screenshot-mockup">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="rgba(255,255,255,0.3)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                        </div>
+                        <h4 class="screenshot-title">Ritual Checklist</h4>
+                    </div>
+                    
+                    <div class="screenshot-item fade-in">
+                        <div class="screenshot-mockup">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="rgba(255,255,255,0.3)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2 1l-2 3v6h2v7h4z"/>
+                            </svg>
+                        </div>
+                        <h4 class="screenshot-title">Provider Dashboard</h4>
+                    </div>
+                    
+                    <div class="screenshot-item fade-in">
+                        <div class="screenshot-mockup">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="rgba(255,255,255,0.3)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                        </div>
+                        <h4 class="screenshot-title">Family Dashboard</h4>
+                    </div>
+                    
+                    <div class="screenshot-item fade-in">
+                        <div class="screenshot-mockup">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="rgba(255,255,255,0.3)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <path d="M18.92 5.01C18.72 4.42 18.16 4 17.5 4h-11c-.66 0-1.22.42-1.42 1.01L3 11v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
+                            </svg>
+                        </div>
+                        <h4 class="screenshot-title">Emergency SOS</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="section blog">
+        <div class="container">
+            <h2 class="section-title fade-in">Latest Articles</h2>
+            <p class="section-subtitle fade-in">Guidance, tips, and insights for your spiritual journey</p>
+            
+            <div class="blog-grid">
+                <a href="#" class="blog-card fade-in">
+                    <div class="blog-image">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">10 Essential Duas for Hajj & Umrah</h3>
+                        <p class="blog-excerpt">Discover the most important supplications to recite during your pilgrimage, with Arabic text, transliteration, and meanings.</p>
+                        <div class="blog-meta">5 min read • Spiritual Guide</div>
+                    </div>
+                </a>
+                
+                <a href="#" class="blog-card fade-in">
+                    <div class="blog-image">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">How GPS Tracking Saves Lives During Hajj</h3>
+                        <p class="blog-excerpt">Real stories of how technology has helped pilgrims stay safe and families stay connected during the holy pilgrimage.</p>
+                        <div class="blog-meta">7 min read • Safety</div>
+                    </div>
+                </a>
+                
+                <a href="#" class="blog-card fade-in">
+                    <div class="blog-image">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                        </svg>
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Complete Packing Guide for Pilgrims</h3>
+                        <p class="blog-excerpt">Everything you need to pack for Hajj or Umrah, including essential items, clothing recommendations, and spiritual preparations.</p>
+                        <div class="blog-meta">10 min read • Travel Tips</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="section newsletter">
+        <div class="container">
+            <h2 class="section-title fade-in">Stay Connected — Spiritually and Practically</h2>
+            <p class="section-subtitle fade-in">Get the latest updates, tips, and duas delivered to your inbox</p>
+            
+            <form class="newsletter-form fade-in">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section testimonials">
+        <div class="container">
+            <h2 class="section-title fade-in">What Pilgrims Say</h2>
+            <p class="section-subtitle fade-in">Stories from our community</p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-content">FindMyHaji gave my family peace of mind while I was in Makkah. They could track my location and know I was safe during Tawaf. Alhamdulillah, technology serving faith.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>Ahmad Rahman</h4>
+                            <p>Pilgrim from Delhi</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-content">As a group leader managing 50 pilgrims, FindMyHaji was a lifesaver. I could track everyone, send group messages, and coordinate our activities seamlessly. Highly recommended.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>Fatima Al-Zahra</h4>
+                            <p>Group Leader, Mumbai</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-content">Watching my parents' Hajj journey through the family dashboard was emotional and comforting. I felt connected to their spiritual journey from thousands of miles away.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>Sarah Khan</h4>
+                            <p>Family Member, London</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section faq">
+        <div class="container">
+            <h2 class="section-title fade-in">Frequently Asked Questions</h2>
+            <p class="section-subtitle fade-in">Everything you need to know about FindMyHaji</p>
+            
+            <div class="faq-container">
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        How does GPS tracking work during Hajj?
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Our GPS tracking uses satellite technology to provide real-time location updates. It works even in crowded areas and automatically shares your location with designated family members and group leaders while preserving your privacy.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        Is FindMyHaji free for individual pilgrims?
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes! Individual pilgrims can use FindMyHaji completely free, including GPS tracking, emergency SOS, ritual guidance, and family updates. Group features for tour operators require a one-time payment of ₹199 per trip.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        What happens when I press the SOS button?
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            When you press SOS, your exact location is immediately sent to your emergency contacts, group leader, and local authorities. Your family receives an instant notification with your location and can coordinate help quickly.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        Does the app work offline?
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes, FindMyHaji includes offline maps of holy sites and essential features work without internet. However, real-time tracking and communication features require an internet connection for optimal performance.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        How do families track multiple pilgrims?
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Our family dashboard allows you to track multiple family members on a single map, receive updates from all of them, and manage communication with each pilgrim individually or as a group.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        Is my personal data secure?
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Absolutely. We use enterprise-grade encryption and only share your location with people you explicitly authorize. Your spiritual journey data is never sold or shared with third parties, and you maintain complete control over your privacy settings.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="section cta">
+        <div class="container">
+            <h2 class="section-title fade-in">Start Your Journey with FindMyHaji</h2>
+            <p class="section-subtitle fade-in">Join thousands of pilgrims who trust us for their sacred journey</p>
+            
+            <div class="cta-buttons fade-in">
+                <a href="#" class="btn btn-secondary">Download App</a>
+                <a href="#" class="btn btn-outline">Become a Provider</a>
+                <a href="#" class="btn btn-outline">Access Web Portal</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us -->
+    <section class="section about" id="contact">
+        <div class="container">
+            <h2 class="section-title fade-in">Contact Us</h2>
+            <p class="section-subtitle fade-in">We're here to help with your pilgrimage journey</p>
+            
+            <div class="about-content">
+                <div class="about-text fade-in">
+                    <h3>Get in Touch</h3>
+                    <p><strong>Email:</strong> support@findmyhaji.com</p>
+                    <p><strong>WhatsApp:</strong> +91 98765 43210</p>
+                    <p><strong>Working Hours:</strong> 24/7 during Hajj & Umrah seasons</p>
+                    <p><strong>Emergency Support:</strong> Available round the clock</p>
+                    
+                    <div style="margin-top: 2rem;">
+                        <h4 style="margin-bottom: 1rem;">Quick Links</h4>
+                        <a href="#" class="btn btn-outline" style="margin-right: 1rem; margin-bottom: 0.5rem;">Technical Support</a>
+                        <a href="#" class="btn btn-outline" style="margin-right: 1rem; margin-bottom: 0.5rem;">Provider Registration</a>
+                        <a href="#" class="btn btn-outline" style="margin-bottom: 0.5rem;">Emergency Help</a>
+                    </div>
+                </div>
+                
+                <div class="about-visual fade-in">
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-textarea" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>FindMyHaji</h4>
+                    <p>Connecting hearts and souls during the most sacred journey of a lifetime. Technology serving faith with respect and dignity.</p>
+                    <div class="social-links">
+                        <a href="#" title="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" title="YouTube">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
+                        <a href="#" title="Twitter/X">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" title="LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Download Apps</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Download for iOS</a></li>
+                        <li><a href="#">Download for Android</a></li>
+                        <li><a href="#">Web Portal Access</a></li>
+                        <li><a href="#">Provider Registration</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Emergency Support</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 FindMyHaji. All rights reserved. Built with ❤️ to serve the pilgrims of Allah.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Progress Bar
+        function updateScrollProgress() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrolled = (scrollTop / height) * 100;
+            scrollProgress.style.width = scrolled + '%';
+        }
+
+        // Fade In Animation Observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // FAQ Functionality
+        function initFAQ() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all FAQ items
+                    faqItems.forEach(faq => faq.classList.remove('active'));
+                    
+                    // Open clicked item if it wasn't active
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Smooth Scrolling for Anchor Links
+        function initSmoothScrolling() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        const offsetTop = targetSection.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Newsletter Form Submission
+        function initNewsletterForm() {
+            const form = document.querySelector('.newsletter-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = form.querySelector('.newsletter-input').value;
+                    if (email) {
+                        alert('Jazakallahu Khairan! Thank you for subscribing. We will keep you updated with valuable content.');
+                        form.querySelector('.newsletter-input').value = '';
+                    }
+                });
+            }
+        }
+
+        // Contact Form Submission
+        function initContactForm() {
+            const form = document.querySelector('.contact-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    alert('Jazakallahu Khairan! Your message has been sent. We will respond within 24 hours, InshAllah.');
+                    form.reset();
+                });
+            }
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Observe all fade-in elements
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // Initialize all functionality
+            initFAQ();
+            initSmoothScrolling();
+            initNewsletterForm();
+            initContactForm();
+
+            // Add scroll event listener
+            window.addEventListener('scroll', updateScrollProgress);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
