@@ -5,7 +5,7 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 const Urls  = {
-    baseUrl:'http://localhost:8001',
+    baseUrl:'http://localhost:8001/api',
 }
 
 export {Urls}

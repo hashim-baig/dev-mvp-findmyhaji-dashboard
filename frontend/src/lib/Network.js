@@ -19,11 +19,11 @@ const checkExist = () => {
 }
 const updateExpiryToken = () => {
     const itemStr = localStorage.getItem('findmyhaji_token');
-    const item = JSON.parse(itemStr);
+    const item = itemStr;
     const now = new Date();
     const fourHoursInMs = 4 * 60 * 60 * 1000;//4 hour
     const updatedItem = {
-        token: item.token,
+        token: item,
         expiry: now.getTime() + fourHoursInMs, // ttl in milliseconds
     };
     localStorage.removeItem('findmyhaji_token');
@@ -37,25 +37,21 @@ const Network = {
       .then((response) => response)
       .catch((error) => error);
   },
-  post: (url, headerData, parameters, isSubmitFiles = false) => {
+  post: (url, headerData, parameters) => {
         if(checkExist()){
             updateExpiryToken();
         }
-        if(isSubmitFiles === false){
         return axios.create({
             baseURL: url,
             headerData,
         }).post(url,parameters)
                   .then(function (response) { return response })
-                  .catch(function (error) { return error })
-        }else{
-        // return axios.create({
-        //     baseURL: url,
-        //     headers: { 'Content-Type': 'multipart/form-data','Accept':'application/json'},
-        // }).post(url,parameters)
-        //           .then(function (response) { return response })
-        //           .catch(function (error) { return error })
-        }
+                  .catch(function (error) {
+                    if (error.response) {
+                    return error.response;
+                    }
+                    return { error: error };
+                });
       
   }
    

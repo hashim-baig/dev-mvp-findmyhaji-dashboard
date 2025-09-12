@@ -47,7 +47,7 @@ router.post('/login', [
     const { email, password } = req.body;
     // Find admin user
     const result = await dbPool.query(
-        "SELECT * FROM users WHERE email = $1 LIMIT 1",
+        "SELECT * FROM users WHERE email = $1 AND role = 1 LIMIT 1",
         [email]
       );
     if (result.rows.length === 0) {
@@ -55,7 +55,6 @@ router.post('/login', [
     }
 
     const user = result.rows[0];
-
     // 🔹 Compare password (must be hashed in DB!)
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
@@ -83,7 +82,7 @@ router.post('/login', [
       token,
       user: {
         id: user.id,
-        name: user.name,
+        name: user.firstname + ' ' + user.lastname,
         email: user.email,
         role: role_data.name,
         location: user.location,
