@@ -30,7 +30,7 @@ const RoleManagement = () => {
             'Authorization': `Bearer ${token}`
         };
         
-        const response = await Network.get(Urls.baseUrl +'/api/users', headers);
+        const response = await Network.get(Urls.baseUrl +'/users', headers);
         if (response?.data?.success === 'success') {
             setEmployees(response.data.data);
         } else {
@@ -52,7 +52,7 @@ const RoleManagement = () => {
             'Authorization': `Bearer ${token}`
         };
         
-        const response = await Network.get(Urls.baseUrl +'/api/roles', headers);
+        const response = await Network.get(Urls.baseUrl +'/roles', headers);
         if (response?.data?.success === 'success') {
             setRoles(response.data.data);
         } else {
@@ -86,7 +86,7 @@ const RoleManagement = () => {
           user_id: selectedUser,
           role: selectedRole
         }
-        const response = await Network.get(Urls.baseUrl +'/api/role/save', headers);
+        const response = await Network.get(Urls.baseUrl +'/role/save', headers);
         if (response?.data?.success === 'success') {
             setRoles(response.data.data);
         } else {
@@ -139,7 +139,7 @@ const RoleManagement = () => {
                 <option value="">Select User</option>
               {employees.map(item => (
                 <option data-role={item.role} key={item.id} value={item.id}>
-                  {item.name}
+                  {item.firstname} {item.lastname}
                 </option>
               ))}
             </select>

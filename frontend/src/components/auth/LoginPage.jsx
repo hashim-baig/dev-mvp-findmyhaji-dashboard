@@ -39,7 +39,7 @@ const LoginPage = () => {
             email:credentials.email,
             password:credentials.password
           }
-          const response = await Network.post(Urls.baseUrl +'/api/auth/login', headers, param);
+          const response = await Network.post(Urls.baseUrl +'/auth/login', headers, param);
           if(response?.data?.status === "success"){
             localStorage.setItem('findmyhaji_token', response.data.token);
             localStorage.setItem('findmyhaji_user', JSON.stringify({

@@ -269,30 +269,90 @@
 import dbPool from '../db.js';
 
 class User {
-  constructor({ id, name, email, role, displayrole, location, avatar }) {
+  constructor({ id, firstname, lastname, email, role, displayrole, location, avatar }) {
     this.id = id;
-    this.name = name;
+    this.firstname = firstname;
+    this.lastname = lastname;
     this.email = email;
-    this.role = displayrole || role; // prefer displayrole if available
+    this.role = role;
+    this.displayrole = displayrole;
     this.location = location;
-    // this.avatar = avatar;
+    this.avatar = avatar;
   }
 
-  static async findOne(id) {
-    const result = await dbPool.query(
-      'SELECT * FROM users WHERE id = $1 LIMIT 1',
-      [id]
-    );
+  static async findOne({ id, email, phone }) {
+    let whereClause = [];
+    let values = [];
+    let idx = 1;
+
+    if (id) {
+      whereClause.push(`id = $${idx++}`);
+      values.push(id);
+    }
+    if (email) {
+      whereClause.push(`email = $${idx++}`);
+      values.push(email);
+    }
+    if (phone) {
+      whereClause.push(`mobile = $${idx++}`);
+      values.push(phone);
+    }
+
+    if (whereClause.length === 0) {
+      throw new Error('At least one identifier (id, email, or mobile) must be provided');
+    }
+
+    const query = `SELECT * FROM users WHERE ${whereClause.join(' OR ')} LIMIT 1`;
+    const result = await dbPool.query(query, values);
+
     if (result.rows.length === 0) return null;
     return new User(result.rows[0]);
   }
 
- static async findAll() {
+  static async findAll() {
     const result = await dbPool.query(
-      'SELECT id,name,role FROM users'
+      'SELECT id,firstname,lastname,role FROM users where role != 1',
     );
     return result.rows;
   }
+  static async findWithPagination(search, offset, limit) {
+    let whereClause = "WHERE role != 1";
+    let values = [];
+    if (search) {
+      whereClause += ` AND (firstname ILIKE $1 OR lastname ILIKE $1 OR mobile ILIKE $1 OR email ILIKE $1)`;
+      values.push(search);
+    }
+    const totalResult = await dbPool.query(`SELECT COUNT(*) FROM users ${whereClause}`,
+      values);
+    const totalUsers = parseInt(totalResult.rows[0].count, 10);
+
+    values.push(limit, offset); 
+    const result = await dbPool.query(
+      `SELECT id, firstname, lastname, email, mobile, created_at FROM users ${whereClause} ORDER BY created_at DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
+      values
+    );
+    return { rows: result.rows, totalUsers };
+  }
+  static async save({ firstName, lastName, email, password, mobile, role, created_at, avatar }) {
+    const query = `
+      INSERT INTO users (firstname, lastname, email, password, mobile, role, created_at, avatar)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING id, firstname, lastname, email, role, mobile, created_at, avatar
+    `;
+    const values = [
+      firstName,
+      lastName,
+      email,
+      password,
+      mobile,
+      role,
+      created_at,
+      avatar
+    ];
+    const result = await dbPool.query(query, values);
+    return result.rows[0];
+  }
+
 }
 
 export default User;

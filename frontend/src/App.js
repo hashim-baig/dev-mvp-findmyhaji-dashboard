@@ -19,6 +19,7 @@ import PushNotificationConfig from "./components/admin/PushNotificationConfig";
 import ThirdPartyConfigurations from "./components/admin/ThirdPartyConfigurations";
 import IntegrationDashboard from "./components/admin/IntegrationDashboard";
 import RoleManagement from "./components/employees/RoleManagement";
+import EmployeeList from "./components/employees/EmployeeList";
 
 // Website redirect component
 const WebsiteRedirect = () => {
@@ -341,10 +342,7 @@ function App() {
           <Route path="/employees/list" element={
             <ProtectedRoute>
               <ModernLayout>
-                <div className="text-center py-20">
-                  <h2 className="text-2xl font-bold text-gray-800">Employee List</h2>
-                  <p className="text-gray-600 mt-2">Employee directory and management coming soon...</p>
-                </div>
+                <EmployeeList/>
               </ModernLayout>
             </ProtectedRoute>
           } />
