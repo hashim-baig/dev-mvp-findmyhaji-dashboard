@@ -10,6 +10,7 @@ import PaymentConfig from './configs/PaymentConfig';
 import StorageConfig from './configs/StorageConfig';
 import AppSettings from './configs/AppSettings';
 import FirebaseAuthConfig from './configs/FirebaseAuthConfig';
+import Network from '@/lib/Network';
 
 const ThirdPartyConfigurations = () => {
   const [activeTab, setActiveTab] = useState('map-api');
@@ -20,7 +21,7 @@ const ThirdPartyConfigurations = () => {
   const tabs = [
     {
       id: 'map-api',
-      name: 'Map API',
+      name: 'Google API',
       icon: Map,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
@@ -108,28 +109,20 @@ const ThirdPartyConfigurations = () => {
       setLoading(true);
       setErrorMessage('');
       
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+      // const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
       const token = localStorage.getItem('findmyhaji_token');
-      
-      const response = await fetch(`${BACKEND_URL}/api/configurations/update`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          category: activeTab,
-          config: configData
-        })
-      });
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
 
-      const data = await response.json();
-      
-      if (data.success) {
+      const response = await Network.put(`/configurations/update`, headers, configData);  
+      console.log('Save Response:', response);    
+      if (response?.data?.success === 'success') {
         setSavedMessage('Configuration saved successfully!');
         setTimeout(() => setSavedMessage(''), 3000);
       } else {
-        setErrorMessage(data.message || 'Failed to save configuration');
+        setErrorMessage(response?.data?.message || 'Failed to save configuration');
       }
     } catch (error) {
       console.error('Error saving configuration:', error);
@@ -141,7 +134,7 @@ const ThirdPartyConfigurations = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">

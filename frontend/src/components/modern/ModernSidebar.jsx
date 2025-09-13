@@ -145,11 +145,6 @@ const ModernSidebar = ({ onLogout }) => {
           icon: Bell, 
           label: '🔔 Push Notifications', 
           path: '/admin/notifications'
-        },
-        { 
-          icon: Settings, 
-          label: '⚙️ 3rd Party Configs', 
-          path: '/admin/third-party'
         }
       ]
     },
@@ -217,7 +212,8 @@ const ModernSidebar = ({ onLogout }) => {
         { icon: Bell, label: 'Push Notifications', path: '/config/notifications' },
         { icon: Globe, label: '3rd Party Integrations', path: '/config/integrations' },
         { icon: Activity, label: 'Integration Testing', path: '/admin/integration-dashboard' },
-        { icon: Globe, label: 'Language Setup', path: '/config/languages' }
+        { icon: Globe, label: 'Language Setup', path: '/config/languages' },
+        { icon: Settings, label: '⚙️ 3rd Party Configs', path: '/admin/third-party'}
       ]
     },
     {

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Map, AlertTriangle, Save, RefreshCw, Info, Eye, EyeOff } from 'lucide-react';
+import Network from '@/lib/Network';
+import { Urls } from '@/lib/utils';
 
 const MapAPIConfig = ({ onSave, loading, category }) => {
   const [config, setConfig] = useState({
-    serverKey: '',
-    clientKey: '',
-    enabled: false
+    // serverKey: '',
+    // client_key: '',
+    // status: 0,
+    module: 'google_api'
   });
-  const [showServerKey, setShowServerKey] = useState(false);
+  // const [showServerKey, setShowServerKey] = useState(false);
   const [showClientKey, setShowClientKey] = useState(false);
-
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     fetchConfig();
@@ -19,18 +20,13 @@ const MapAPIConfig = ({ onSave, loading, category }) => {
   const fetchConfig = async () => {
     try {
       const token = localStorage.getItem('findmyhaji_token');
-      const response = await fetch(`${BACKEND_URL}/api/configurations/${category}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          setConfig(data.data);
-        }
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+      const response = await Network.get(Urls.baseUrl +`/configurations/${config.module}`, headers);
+      if (response?.data?.success === 'success') {
+        setConfig({client_key:response?.data?.data?.client_key, status: response?.data?.data?.status,id:response?.data?.data?.id, module: config.module});
       }
     } catch (error) {
       console.error('Error fetching config:', error);
@@ -52,7 +48,7 @@ const MapAPIConfig = ({ onSave, loading, category }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Warning Notice */}
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      {/* <div className="bg-red-50 border border-red-200 rounded-lg p-4">
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
           <div>
@@ -63,26 +59,26 @@ const MapAPIConfig = ({ onSave, loading, category }) => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Enable Toggle */}
       <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
         <div className="flex items-center gap-3">
           <Map className="w-5 h-5 text-blue-600" />
           <div>
-            <h3 className="font-semibold text-gray-900">Enable Map API</h3>
-            <p className="text-sm text-gray-600">Activate Google Maps integration</p>
+            <h3 className="font-semibold text-gray-900">Enable Google API</h3>
+            <p className="text-sm text-gray-600">Activate Google integration</p>
           </div>
         </div>
         <button
           type="button"
-          onClick={() => handleInputChange('enabled', !config.enabled)}
+          onClick={() => handleInputChange('status', !config.status)}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            config.enabled ? 'bg-green-600' : 'bg-gray-200'
+            config.status ? 'bg-green-600' : 'bg-gray-200'
           }`}
         >
           <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-            config.enabled ? 'translate-x-6' : 'translate-x-1'
+            config.status ? 'translate-x-6' : 'translate-x-1'
           }`} />
         </button>
       </div>
@@ -90,7 +86,7 @@ const MapAPIConfig = ({ onSave, loading, category }) => {
       {/* API Keys */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Server Key */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
             Map API Key Server *
           </label>
@@ -119,18 +115,18 @@ const MapAPIConfig = ({ onSave, loading, category }) => {
             <Info className="w-3 h-3" />
             <span>Used for server-side API calls (Places API)</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Client Key */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Map API Key Client *
+            Google API Key Client *
           </label>
           <div className="relative">
             <input
               type={showClientKey ? 'text' : 'password'}
-              value={config.clientKey}
-              onChange={(e) => handleInputChange('clientKey', e.target.value)}
+              value={config.client_key}
+              onChange={(e) => handleInputChange('client_key', e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent pr-12"
               placeholder="Enter client API key"
               required

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Urls } from './utils';
 
 const isTokenExpire = () => {
     const itemStr = localStorage.getItem('findmyhaji_token');
@@ -14,21 +15,21 @@ const isTokenExpire = () => {
     }
     return false;
 }
-const checkExist = () => {
-    return localStorage.getItem('findmyhaji_token') ? true :false;
-}
-const updateExpiryToken = () => {
-    const itemStr = localStorage.getItem('findmyhaji_token');
-    const item = itemStr;
-    const now = new Date();
-    const fourHoursInMs = 4 * 60 * 60 * 1000;//4 hour
-    const updatedItem = {
-        token: item,
-        expiry: now.getTime() + fourHoursInMs, // ttl in milliseconds
-    };
-    localStorage.removeItem('findmyhaji_token');
-    localStorage.setItem('findmyhaji_token',JSON.stringify(updatedItem));
-}
+// const checkExist = () => {
+//     return localStorage.getItem('findmyhaji_token') ? true :false;
+// }
+// const updateExpiryToken = () => {
+//     const itemStr = localStorage.getItem('findmyhaji_token');
+//     const item = itemStr;
+//     const now = new Date();
+//     const fourHoursInMs = 4 * 60 * 60 * 1000;//4 hour
+//     const updatedItem = {
+//         token: item,
+//         expiry: now.getTime() + fourHoursInMs, // ttl in milliseconds
+//     };
+//     localStorage.removeItem('findmyhaji_token');
+//     localStorage.setItem('findmyhaji_token',JSON.stringify(updatedItem));
+// }
 
 
 const Network = {
@@ -38,9 +39,9 @@ const Network = {
       .catch((error) => error);
   },
   post: (url, headerData, parameters) => {
-        if(checkExist()){
-            updateExpiryToken();
-        }
+        // if(checkExist()){
+        //     updateExpiryToken();
+        // }
         return axios.create({
             baseURL: url,
             headerData,
@@ -53,7 +54,21 @@ const Network = {
                     return { error: error };
                 });
       
-  }
+  },
+  put: (path, headers, parameters) => {
+    return axios.create({
+      baseURL: Urls.baseUrl+path,
+      headers,
+    })
+      .put(Urls.baseUrl+path, parameters)
+      .then(response => response)
+      .catch(error => {
+        if (error.response) {
+          return error.response;
+        }
+        return { error };
+      });
+  },
    
 };
 
