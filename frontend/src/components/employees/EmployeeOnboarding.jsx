@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -25,6 +26,7 @@ import Network from '@/lib/Network';
 import { Urls } from '@/lib/utils';
 
 const EmployeeOnboarding = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -199,6 +201,10 @@ const EmployeeOnboarding = () => {
               toast.success('Employee onboarding completed!', {
                 description: `${formData.firstName} ${formData.lastName} has been successfully added to the system.`
               });
+              // redirect to employee list
+              setTimeout(() => {
+                navigate('/employees/list');
+              }, 3000);
           }else{
             toast.error("Registration Failed", {
               description: response.data.message,

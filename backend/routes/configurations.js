@@ -28,73 +28,83 @@ router.get('/', authenticate, authorize('admin'), async (req, res) => {
 });
 
 // GET /api/configurations/:category - Get specific category configuration
-router.get('/:category', authenticate, authorize('admin'), async (req, res) => {
+router.get('/:category', authenticate, authorize('1'), async (req, res) => {
+  const { category } = req.params;  
   try {
-    const { category } = req.params;
-    
-    const settings = await ConfigurationSettings.getByCategory(category);
-    
+    let table = 'google_detail';
+    if(category === 'google_api'){
+      table = 'google_detail';
+    }
+    const result = await ConfigurationSettings.findAll(table);
     res.json({
-      success: true,
-      data: settings
+      success: 'success',
+      data: result
     });
     
   } catch (error) {
-    console.error('Error fetching configuration:', error);
+    console.error('Error fetching users:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching configuration',
+      message: `Error fetching `+ category + ` configuration`,
       error: error.message
     });
   }
 });
 
 // PUT /api/configurations/update - Update configuration
-router.put('/update', authenticate, authorize('admin'), async (req, res) => {
+router.put('/update', authenticate, authorize('1'), async (req, res) => {
   try {
-    const { category, config } = req.body;
-    
-    if (!category || !config) {
+    const { module, id, client_key, status } = req.body;
+    if (!module || !id || !client_key) {
       return res.status(400).json({
         success: false,
-        message: 'Category and config are required'
+        message: 'Please fill are required fields'
       });
     }
-    
-    const validCategories = [
-      'map-api',
-      'firebase-notification', 
-      'recaptcha',
-      'apple-login',
-      'email-config',
-      'sms-config',
-      'payment-config',
-      'storage-config',
-      'app-settings',
-      'firebase-auth'
+    const validModule = [
+      'google_api',
+      // 'firebase-notification', 
+      // 'recaptcha',
+      // 'apple-login',
+      // 'email-config',
+      // 'sms-config',
+      // 'payment-config',
+      // 'storage-config',
+      // 'app-settings',
+      // 'firebase-auth'
     ];
+    let table = '';
+    switch(module) {
+      case 'google_api':
+        table = 'google_detail';
+        break;
+    }
+      // case 'firebase-notification':
     
-    if (!validCategories.includes(category)) {
+    if (!validModule.includes(module)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid category'
+        message: 'Invalid module type'
       });
     }
-    
-    const updatedConfig = await ConfigurationSettings.updateByCategory(
-      category,
-      config,
-      req.user
+    const where = { id: id };
+    const updateData = {
+      client_key: client_key,
+      status: status === true ? 1 : 0,
+    };
+    const config = { where, updateData };
+    // Update configuration in DB
+    const updatedConfig = await ConfigurationSettings.update(
+      table,
+      config
     );
-    
+
     res.json({
-      success: true,
+      success: 'success',
       message: 'Configuration updated successfully',
       data: {
-        category: updatedConfig.category,
-        settings: updatedConfig.getSettingsObject(),
-        version: updatedConfig.version,
-        lastUpdated: updatedConfig.lastUpdated
+        module: module,
+        results: updatedConfig
       }
     });
     
