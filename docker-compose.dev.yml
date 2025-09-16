@@ -1,38 +1,63 @@
-# Development Docker Compose Override
+version: '3.9'
 
 services:
-  mongodb:
-    ports:
-      - "27017:27017"
+  postgres:
+    image: postgres:15
+    container_name: findmyhaji-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: findmyhaji
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
     volumes:
-      - mongodb_data:/data/db
-      - ./mongo-init:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
-  # Node.js Backend API
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+    container_name: findmyhaji-backend
+    restart: always
     environment:
-      NODE_ENV: development
+      POSTGRE_URL: postgres://postgres:admin123@postgres:5432/findmyhaji
+      DB_NAME: findmyhaji
+      FRONTEND_URL: https://301b5fc1-9d13-4db3-8a6f-937681303e79.preview.emergentagent.com
+      CORS_ORIGINS: https://301b5fc1-9d13-4db3-8a6f-937681303e79.preview.emergentagent.com
+      JWT_SECRET: findmyhaji_secret_key
+      STRIPE_API_KEY: sk_test_emergent
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: admin123
+      PG_DATABASE: findmyhaji
+    depends_on:
+      - postgres
+    ports:
+      - "8001:8001"
     volumes:
-      - ./backend:/app/backend
-      - /app/backend/node_modules
-    command: ["yarn", "dev"]
+      - ./backend:/app
+    working_dir: /app
+    command: ["npm", "run", "start"]
 
-  # React Frontend
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+    container_name: findmyhaji-frontend
+    restart: always
     environment:
-      REACT_APP_BACKEND_URL: http://localhost:8001
-      FAST_REFRESH: true
-      CHOKIDAR_USEPOLLING: true
+      REACT_APP_BACKEND_URL: https://28ed4ca0-5224-45ac-9ae5-cab06551907a.preview.emergentagent.com
+      WDS_SOCKET_PORT: 443
+    ports:
+      - "3000:3000"
     volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
+      - ./frontend:/app
+    working_dir: /app
     command: ["yarn", "start"]
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
 
 volumes:
-  mongodb_data:
+  pgdata:
