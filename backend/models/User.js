@@ -269,7 +269,7 @@
 import dbPool from '../db.js';
 
 class User {
-  constructor({ id, firstname, lastname, email, role, displayrole, location, avatar }) {
+  constructor({ id, firstname, lastname, email, role, displayrole, location, avatar, status, countrycode, mobile }) {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
@@ -278,6 +278,9 @@ class User {
     this.displayrole = displayrole;
     this.location = location;
     this.avatar = avatar;
+    this.status = status;
+    this.countrycode = countrycode;
+    this.mobile = mobile;
   }
 
   static async findOne({ id, email, phone }) {
@@ -319,7 +322,7 @@ class User {
     let whereClause = "WHERE role != 1";
     let values = [];
     if (search) {
-      whereClause += ` AND (firstname ILIKE $1 OR lastname ILIKE $1 OR mobile ILIKE $1 OR email ILIKE $1)`;
+      whereClause += ` AND (firstname ILIKE $1 OR lastname ILIKE $1 OR mobile ILIKE $1 OR mobile ILIKE $1 OR email ILIKE $1)`;
       values.push(search);
     }
     const totalResult = await dbPool.query(`SELECT COUNT(*) FROM users ${whereClause}`,
@@ -328,16 +331,16 @@ class User {
 
     values.push(limit, offset); 
     const result = await dbPool.query(
-      `SELECT id, firstname, lastname, email, mobile, created_at FROM users ${whereClause} ORDER BY created_at DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
+      `SELECT id, firstname, lastname, email, mobile, created_at, status, countrycode FROM users ${whereClause} ORDER BY created_at DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
       values
     );
     return { rows: result.rows, totalUsers };
   }
-  static async save({ firstName, lastName, email, password, mobile, role, created_at, avatar }) {
+  static async save({ firstName, lastName, email, password, mobile, countrycode, role, created_at, avatar }) {
     const query = `
-      INSERT INTO users (firstname, lastname, email, password, mobile, role, created_at, avatar)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id, firstname, lastname, email, role, mobile, created_at, avatar
+      INSERT INTO users (firstname, lastname, email, password, mobile, countrycode, role, created_at, avatar)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, firstname, lastname, email, role, mobile, created_at, avatar, countrycode
     `;
     const values = [
       firstName,
@@ -345,12 +348,37 @@ class User {
       email,
       password,
       mobile,
+      countrycode,
       role,
       created_at,
       avatar
     ];
     const result = await dbPool.query(query, values);
     return result.rows[0];
+  }
+  static async update({where, updateData}) {
+    const setClause = Object.keys(updateData)
+      .map((key, index) => `${key} = $${index + 1}`)
+      .join(', ');
+    const values = Object.values(updateData);
+    values.push(where.id);
+
+    const query = `UPDATE users SET ${setClause} WHERE id = $${values.length} RETURNING id, firstname, lastname, email, status, mobile, created_at, countrycode`;
+    const result = await dbPool.query(query, values);
+    return result.rows[0];
+  }
+  static async deleteOne(id) {
+    const query = 'DELETE FROM users WHERE id = $1';
+    const values = [id];
+    await dbPool.query(query, values);
+    return true;
+  }
+  static async userExistWithSameEmail({ email, id }) {
+    const query = 'SELECT * FROM users WHERE email = $1 AND id != $2 LIMIT 1';
+    const values = [email, id];
+    const result = await dbPool.query(query, values);
+    if (result.rows.length === 0) return null;
+    return new User(result.rows[0]);
   }
 
 }

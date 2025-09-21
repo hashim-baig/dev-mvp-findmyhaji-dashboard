@@ -117,7 +117,6 @@ const ThirdPartyConfigurations = () => {
       };
 
       const response = await Network.put(`/configurations/update`, headers, configData);  
-      console.log('Save Response:', response);    
       if (response?.data?.success === 'success') {
         setSavedMessage('Configuration saved successfully!');
         setTimeout(() => setSavedMessage(''), 3000);

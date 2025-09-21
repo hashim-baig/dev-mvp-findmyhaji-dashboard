@@ -7,7 +7,7 @@ import { Toaster } from "./components/ui/sonner";
 import LoginPage from "./components/auth/LoginPage";
 import ModernLayout from "./components/modern/ModernLayout";
 import ModernDashboard from "./components/modern/ModernDashboard";
-import EmployeeOnboarding from "./components/employees/EmployeeOnboarding";
+import CustomerOnboarding from "./components/customers/CustomerOnboarding";
 import ProviderRegistration from "./components/providers/ProviderRegistration";
 import ProviderLogin from "./components/providers/ProviderLogin";
 import ProviderDashboard from "./components/providers/ProviderDashboard";
@@ -18,8 +18,9 @@ import BlogManagement from "./components/admin/BlogManagement";
 import PushNotificationConfig from "./components/admin/PushNotificationConfig";
 import ThirdPartyConfigurations from "./components/admin/ThirdPartyConfigurations";
 import IntegrationDashboard from "./components/admin/IntegrationDashboard";
-import RoleManagement from "./components/employees/RoleManagement";
-import EmployeeList from "./components/employees/EmployeeList";
+import RoleManagement from "./components/customers/RoleManagement";
+import CustomerList from "./components/customers/CustomerList";
+import RoleMaster from "./components/admin/RoleMaster";
 
 // Website redirect component
 const WebsiteRedirect = () => {
@@ -244,10 +245,10 @@ function App() {
           } />
 
           {/* Employee Management Routes */}
-          <Route path="/employees/add" element={
+          <Route path="/customers/add" element={
             <ProtectedRoute>
               <ModernLayout>
-                <EmployeeOnboarding />
+                <CustomerOnboarding />
               </ModernLayout>
             </ProtectedRoute>
           } />
@@ -329,20 +330,27 @@ function App() {
               </ModernLayout>
             </ProtectedRoute>
           } />
+          <Route path="/system/roles" element={
+            <ProtectedRoute>
+              <ModernLayout>
+                <RoleMaster/>
+              </ModernLayout>
+            </ProtectedRoute>
+          } />
 
           {/* Employee Management placeholder routes */}
-          <Route path="/employees/roles" element={
+          {/* <Route path="/employees/roles" element={
             <ProtectedRoute>
               <ModernLayout>
                 <RoleManagement/>
               </ModernLayout>
             </ProtectedRoute>
-          } />
+          } /> */}
 
-          <Route path="/employees/list" element={
+          <Route path="/customers/list" element={
             <ProtectedRoute>
               <ModernLayout>
-                <EmployeeList/>
+                <CustomerList/>
               </ModernLayout>
             </ProtectedRoute>
           } />

@@ -25,7 +25,7 @@ import { toast } from 'sonner';
 import Network from '@/lib/Network';
 import { Urls } from '@/lib/utils';
 
-const EmployeeOnboarding = () => {
+const CustomerOnboarding = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -34,8 +34,8 @@ const EmployeeOnboarding = () => {
     // Step 1: Employee Info
     firstName: '',
     lastName: '',
-    phone: '',
-    countryCode: '+966',
+    mobile: '',
+    countrycode: '+966',
     role: 2,
     // zone: '',
     email: '',
@@ -108,7 +108,7 @@ const EmployeeOnboarding = () => {
     if (step === 1) {
       if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
       if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-      if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+      if (!formData.mobile.trim()) newErrors.mobile = 'Phone number is required';
       if (!formData.email.trim()) newErrors.email = 'Email is required';
       if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
       if (!formData.password) newErrors.password = 'Password is required';
@@ -187,8 +187,8 @@ const EmployeeOnboarding = () => {
         // Append all fields to FormData
         form.append('firstName', formData.firstName);
         form.append('lastName', formData.lastName);
-        form.append('phone', formData.phone);
-        form.append('countryCode', formData.countryCode);
+        form.append('mobile', formData.mobile);
+        form.append('countrycode', formData.countrycode);
         form.append('role', formData.role);
         form.append('email', formData.email);
         form.append('password', formData.password);
@@ -203,7 +203,7 @@ const EmployeeOnboarding = () => {
               });
               // redirect to employee list
               setTimeout(() => {
-                navigate('/employees/list');
+                navigate('/cutomers/list');
               }, 3000);
           }else{
             toast.error("Registration Failed", {
@@ -260,7 +260,7 @@ const EmployeeOnboarding = () => {
           Phone Number *
         </Label>
         <div className="flex gap-3">
-          <Select value={formData.countryCode} onValueChange={(value) => updateFormData('countryCode', value)}>
+          <Select value={formData.countrycode} onValueChange={(value) => updateFormData('countrycode', value)}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
@@ -280,13 +280,13 @@ const EmployeeOnboarding = () => {
             <Input
               id="phone"
               placeholder="Enter phone number"
-              value={formData.phone}
-              onChange={(e) => updateFormData('phone', e.target.value)}
-              className={`pl-10 ${errors.phone ? 'border-red-500' : ''}`}
+              value={formData.mobile}
+              onChange={(e) => updateFormData('mobile', e.target.value)}
+              className={`pl-10 ${errors.mobile ? 'border-red-500' : ''}`}
             />
           </div>
         </div>
-        {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+        {errors.mobile && <p className="text-sm text-red-500">{errors.phone}</p>}
       </div>
       <div className="space-y-2">
         <Label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -398,7 +398,7 @@ const EmployeeOnboarding = () => {
       </div> */}
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Employee Image (1:1)</Label>
+        <Label className="text-sm font-medium text-gray-700">Image (1:1)</Label>
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
           <input
             type="file"
@@ -581,7 +581,7 @@ const EmployeeOnboarding = () => {
     <div className="max-w-10xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Employee Onboarding</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Customer Onboarding</h1>
         <p className="text-gray-600">Add new team member to FindMyHaji Operations Center</p>
       </div>
 
@@ -628,9 +628,9 @@ const EmployeeOnboarding = () => {
       <Card className="shadow-lg border-0">
         <CardHeader className="border-b border-gray-100">
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Employee Info
+            Cutomer Info
           </CardTitle>
-          <p className="text-gray-600 mt-2">Give employee's basic info</p>
+          <p className="text-gray-600 mt-2">Give cutomer's basic info</p>
           {/* {currentStep < 3 && (
             <p className="text-sm text-gray-500 mt-1">
               Next step: <span className="font-medium text-yellow-600">{currentStepInfo.nextStep}</span>
@@ -669,4 +669,4 @@ const EmployeeOnboarding = () => {
   );
 };
 
-export default EmployeeOnboarding;
+export default CustomerOnboarding;

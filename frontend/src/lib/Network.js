@@ -2,18 +2,18 @@ import axios from 'axios';
 import { Urls } from './utils';
 
 const isTokenExpire = () => {
-    const itemStr = localStorage.getItem('findmyhaji_token');
-    if (!itemStr) return true;
+    const token = localStorage.getItem('findmyhaji_token');
+    const expiry = localStorage.getItem('findmyhaji_token_expiry');
 
-    const item = JSON.parse(itemStr);
-    const now = new Date();
-
-    if (now.getTime() > item.expiry) {
-        localStorage.removeItem('token');
-        window.location.href = "/login";
-        return true;
+    if (!token || !expiry || Date.now() > Number(expiry)) {
+      localStorage.removeItem('findmyhaji_token');
+      localStorage.removeItem('findmyhaji_token_expiry');
+      localStorage.removeItem('findmyhaji_user');
+      window.location.href = "/login";
+    }else{
+        return false;
     }
-    return false;
+    
 }
 // const checkExist = () => {
 //     return localStorage.getItem('findmyhaji_token') ? true :false;
@@ -34,28 +34,30 @@ const isTokenExpire = () => {
 
 const Network = {
   get: (url, headers = {}) => {
+    isTokenExpire();
     return axios.get(url, { headers })
       .then((response) => response)
       .catch((error) => error);
   },
-  post: (url, headerData, parameters) => {
-        // if(checkExist()){
-        //     updateExpiryToken();
-        // }
-        return axios.create({
-            baseURL: url,
-            headerData,
-        }).post(url,parameters)
-                  .then(function (response) { return response })
-                  .catch(function (error) {
-                    if (error.response) {
-                    return error.response;
-                    }
-                    return { error: error };
-                });
+  post: (path, headers, parameters) => {
+    if(!path.includes('login')){
+        isTokenExpire();
+    }
+    return axios.create({
+        baseURL: path,
+        headers,
+    }).post(path,parameters)
+              .then(function (response) { return response })
+              .catch(function (error) {
+                if (error.response) {
+                return error.response;
+                }
+                return { error: error };
+            });
       
   },
   put: (path, headers, parameters) => {
+    isTokenExpire();
     return axios.create({
       baseURL: Urls.baseUrl+path,
       headers,
@@ -69,7 +71,17 @@ const Network = {
         return { error };
       });
   },
-   
+  delete: (url, headers) => {
+    isTokenExpire();
+    return axios.delete(url, { headers })
+      .then((response) => response)
+      .catch(error => {
+        if (error.response) {
+          return error.response;
+        }
+        return { error };
+      });
+  }
 };
 
 export default Network;

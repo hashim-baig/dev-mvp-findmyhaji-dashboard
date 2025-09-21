@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -41,9 +41,10 @@ import {
   Cloud,
   Camera
 } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-
+import { getMenus } from '../menus/menu';
 const ModernSidebar = ({ onLogout }) => {
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({
@@ -63,168 +64,210 @@ const ModernSidebar = ({ onLogout }) => {
       [section]: !prev[section]
     }));
   };
-
-  const menuSections = [
-    {
-      title: 'Main',
-      items: [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', active: true }
-      ]
-    },
-    {
-      title: 'Pilgrimage Management',
-      key: 'pilgrimage',
-      expandable: true,
-      items: [
-        { icon: Calendar, label: 'Hajj Bookings', path: '/bookings/hajj' },
-        { icon: Calendar, label: 'Umrah Bookings', path: '/bookings/umrah' },
-        { icon: Users, label: 'Group Bookings', path: '/bookings/groups' },
-        { icon: FileText, label: 'Booking Reports', path: '/bookings/reports' }
-      ]
-    },
-    {
-      title: 'Promotion Management',
-      key: 'promotion',
-      expandable: true,
-      items: [
-        { icon: Tag, label: 'Hajj Package Discounts', path: '/promotions/discounts' },
-        { icon: Gift, label: 'Coupons', path: '/promotions/coupons' },
-        { icon: Wallet, label: 'Wallet Bonus', path: '/promotions/wallet' },
-        { icon: Megaphone, label: 'Campaigns', path: '/promotions/campaigns' },
-        { icon: Image, label: 'Advertisements', path: '/promotions/ads' },
-        { icon: Image, label: 'Promotional Banners', path: '/promotions/banners' },
-        { icon: Bell, label: 'Send Notifications', path: '/promotions/notifications' }
-      ]
-    },
-    {
-      title: 'Provider Management',
-      key: 'providers',
-      expandable: true,
-      items: [
-        { 
-          icon: UserCheck, 
-          label: 'Provider Applications', 
-          path: '/admin/providers',
-          badge: '12'
-        },
-        { 
-          icon: Users, 
-          label: 'Active Providers', 
-          path: '/admin/providers?status=approved'
-        },
-        { 
-          icon: UserPlus, 
-          label: 'Pending Approvals', 
-          path: '/admin/providers?status=pending',
-          badge: '3'
-        }
-      ]
-    },
-    {
-      title: 'Contact Management',
-      key: 'contacts',
-      expandable: true,
-      items: [
-        { 
-          icon: MessageSquare, 
-          label: 'Contact Inquiries', 
-          path: '/admin/contacts',
-          badge: '5'
-        },
-        { 
-          icon: Bell, 
-          label: 'Website Content', 
-          path: '/admin/website-content'
-        },
-        { 
-          icon: FileText, 
-          label: '📖 Blog Management', 
-          path: '/admin/blogs'
-        },
-        { 
-          icon: Bell, 
-          label: '🔔 Push Notifications', 
-          path: '/admin/notifications'
-        }
-      ]
-    },
-    {
-      title: 'Zone Setup',
-      items: [
-        { icon: MapPin, label: 'Makkah Zones', path: '/zones/makkah' },
-        { icon: MapPin, label: 'Madinah Zones', path: '/zones/madinah' },
-        { icon: MapPin, label: 'Mina Zones', path: '/zones/mina' },
-        { icon: MapPin, label: 'Arafat Zones', path: '/zones/arafat' }
-      ]
-    },
-    {
-      title: 'Employee Management',
-      key: 'employees',
-      expandable: true,
-      items: [
-        { icon: Settings, label: 'Employee Role Setup', path: '/employees/roles' },
-        { icon: List, label: 'Employee List', path: '/employees/list' },
-        { icon: Plus, label: 'Add New Employee', path: '/employees/add' }
-      ]
-    },
-    {
-      title: 'Reports & Analytics',
-      key: 'reports',
-      expandable: true,
-      items: [
-        { icon: FileText, label: 'Transaction Reports', path: '/reports/transactions' },
-        { icon: Briefcase, label: 'Business Reports', path: '/reports/business' },
-        { icon: Calendar, label: 'Booking Reports', path: '/reports/bookings' },
-        { icon: Users, label: 'Agent Reports', path: '/reports/agents' },
-        { icon: Search, label: 'Keyword Search', path: '/analytics/keywords' },
-        { icon: Search, label: 'Customer Search', path: '/analytics/customers' }
-      ]
-    },
-    {
-      title: 'System Management',
-      key: 'system',
-      expandable: true,
-      items: [
-        { icon: Wrench, label: 'Settings Management', path: '/system/settings' },
-        { icon: Briefcase, label: 'Business Settings', path: '/system/business' },
-        { icon: Key, label: 'Login Setup', path: '/system/login' },
-        { icon: BellRing, label: 'Notification Channel', path: '/system/notifications' },
-        { icon: AlertTriangle, label: '404 Logs', path: '/system/logs' },
-        { icon: Activity, label: 'Cron Jobs', path: '/system/cron' }
-      ]
-    },
-    {
-      title: 'Package Management',
-      key: 'subscription',
-      expandable: true,
-      items: [
-        { icon: Package, label: 'Hajj Packages', path: '/packages/hajj' },
-        { icon: Package, label: 'Umrah Packages', path: '/packages/umrah' },
-        { icon: Users, label: 'Subscriber List', path: '/packages/subscribers' },
-        { icon: Settings, label: 'Package Settings', path: '/packages/settings' }
-      ]
-    },
-    {
-      title: 'Configurations',
-      key: 'configurations',
-      expandable: true,
-      items: [
-        { icon: Bell, label: 'Push Notifications', path: '/config/notifications' },
-        { icon: Globe, label: '3rd Party Integrations', path: '/config/integrations' },
-        { icon: Activity, label: 'Integration Testing', path: '/admin/integration-dashboard' },
-        { icon: Globe, label: 'Language Setup', path: '/config/languages' },
-        { icon: Settings, label: '⚙️ 3rd Party Configs', path: '/admin/third-party'}
-      ]
-    },
-    {
-      title: 'Other Tools',
-      items: [
-        { icon: FileText, label: 'Page Settings', path: '/tools/pages' },
-        { icon: Camera, label: 'Gallery', path: '/tools/gallery' },
-        { icon: Cloud, label: 'Backup Database', path: '/tools/backup' }
-      ]
+  const [menus, setMenus] = useState([]);
+  const dashboardMenu = {
+    menu_id: 0,
+    menu_name: "Dashboard",
+    submenus: [
+      {
+        icon: 'LayoutDashboard',
+        label: "Dashboard",
+        path: "/dashboard",
+        active: true
+      }
+    ]
+};
+  useEffect(() => {
+    async function fetchMenus() {
+      const result = await getMenus();
+      const updatedMenus = [dashboardMenu, ...result];
+      const convertedMenus = convertMenus(updatedMenus);
+      setMenus(convertedMenus);
     }
-  ];
+    fetchMenus();
+  }, []);
+  const makeKey = (title) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  // Main converter
+  const convertMenus = (menus) => {
+    return menus.map((menu) => ({
+      title: menu.menu_name,
+      key: makeKey(menu.menu_name),
+      expandable: true,
+      items: menu.submenus.map((sub) => {
+        const Icon = Icons[sub.icon] || Icons.Circle; // fallback icon
+        return {
+          icon: Icon,
+          label: sub.label || sub.name,
+          path: sub.path || sub.route,
+          active: sub.active || false,
+        };
+      }),
+    }));
+  };
+  // const menuSections = [
+  //   {
+  //     title: 'Main',
+  //     items: [
+  //       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', active: true }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Pilgrimage Management',
+  //     key: 'pilgrimage',
+  //     expandable: true,
+  //     items: [
+  //       { icon: Calendar, label: 'Hajj Bookings', path: '/bookings/hajj' },
+  //       { icon: Calendar, label: 'Umrah Bookings', path: '/bookings/umrah' },
+  //       { icon: Users, label: 'Group Bookings', path: '/bookings/groups' },
+  //       { icon: FileText, label: 'Booking Reports', path: '/bookings/reports' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Promotion Management',
+  //     key: 'promotion',
+  //     expandable: true,
+  //     items: [
+  //       { icon: Tag, label: 'Hajj Package Discounts', path: '/promotions/discounts' },
+  //       { icon: Gift, label: 'Coupons', path: '/promotions/coupons' },
+  //       { icon: Wallet, label: 'Wallet Bonus', path: '/promotions/wallet' },
+  //       { icon: Megaphone, label: 'Campaigns', path: '/promotions/campaigns' },
+  //       { icon: Image, label: 'Advertisements', path: '/promotions/ads' },
+  //       { icon: Image, label: 'Promotional Banners', path: '/promotions/banners' },
+  //       { icon: Bell, label: 'Send Notifications', path: '/promotions/notifications' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Provider Management',
+  //     key: 'providers',
+  //     expandable: true,
+  //     items: [
+  //       { 
+  //         icon: UserCheck, 
+  //         label: 'Provider Applications', 
+  //         path: '/admin/providers',
+  //         badge: '12'
+  //       },
+  //       { 
+  //         icon: Users, 
+  //         label: 'Active Providers', 
+  //         path: '/admin/providers?status=approved'
+  //       },
+  //       { 
+  //         icon: UserPlus, 
+  //         label: 'Pending Approvals', 
+  //         path: '/admin/providers?status=pending',
+  //         badge: '3'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Contact Management',
+  //     key: 'contacts',
+  //     expandable: true,
+  //     items: [
+  //       { 
+  //         icon: MessageSquare, 
+  //         label: 'Contact Inquiries', 
+  //         path: '/admin/contacts',
+  //         badge: '5'
+  //       },
+  //       { 
+  //         icon: Bell, 
+  //         label: 'Website Content', 
+  //         path: '/admin/website-content'
+  //       },
+  //       { 
+  //         icon: FileText, 
+  //         label: '📖 Blog Management', 
+  //         path: '/admin/blogs'
+  //       },
+  //       { 
+  //         icon: Bell, 
+  //         label: '🔔 Push Notifications', 
+  //         path: '/admin/notifications'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Zone Setup',
+  //     items: [
+  //       { icon: MapPin, label: 'Makkah Zones', path: '/zones/makkah' },
+  //       { icon: MapPin, label: 'Madinah Zones', path: '/zones/madinah' },
+  //       { icon: MapPin, label: 'Mina Zones', path: '/zones/mina' },
+  //       { icon: MapPin, label: 'Arafat Zones', path: '/zones/arafat' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Customer Management',
+  //     key: 'cutomers',
+  //     expandable: true,
+  //     items: [
+  //       // { icon: Settings, label: 'Employee Role Setup', path: '/employees/roles' },
+  //       { icon: List, label: 'Customer List', path: '/cutomers/list' },
+  //       { icon: Plus, label: 'Add New Customer', path: '/cutomers/add' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Reports & Analytics',
+  //     key: 'reports',
+  //     expandable: true,
+  //     items: [
+  //       { icon: FileText, label: 'Transaction Reports', path: '/reports/transactions' },
+  //       { icon: Briefcase, label: 'Business Reports', path: '/reports/business' },
+  //       { icon: Calendar, label: 'Booking Reports', path: '/reports/bookings' },
+  //       { icon: Users, label: 'Agent Reports', path: '/reports/agents' },
+  //       { icon: Search, label: 'Keyword Search', path: '/analytics/keywords' },
+  //       { icon: Search, label: 'Customer Search', path: '/analytics/customers' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'System Management',
+  //     key: 'system',
+  //     expandable: true,
+  //     items: [
+  //       { icon: Wrench, label: 'Settings Management', path: '/system/settings' },
+  //       { icon: Settings, label: 'Roles Management', path: '/system/roles' },
+  //       { icon: Briefcase, label: 'Business Settings', path: '/system/business' },
+  //       { icon: Key, label: 'Login Setup', path: '/system/login' },
+  //       { icon: BellRing, label: 'Notification Channel', path: '/system/notifications' },
+  //       { icon: AlertTriangle, label: '404 Logs', path: '/system/logs' },
+  //       { icon: Activity, label: 'Cron Jobs', path: '/system/cron' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Package Management',
+  //     key: 'subscription',
+  //     expandable: true,
+  //     items: [
+  //       { icon: Package, label: 'Hajj Packages', path: '/packages/hajj' },
+  //       { icon: Package, label: 'Umrah Packages', path: '/packages/umrah' },
+  //       { icon: Users, label: 'Subscriber List', path: '/packages/subscribers' },
+  //       { icon: Settings, label: 'Package Settings', path: '/packages/settings' }
+  //     ]
+  //   },
+  //   {
+  //     title: 'Configurations',
+  //     key: 'configurations',
+  //     expandable: true,
+  //     items: [
+  //       { icon: Bell, label: 'Push Notifications', path: '/config/notifications' },
+  //       { icon: Globe, label: '3rd Party Integrations', path: '/config/integrations' },
+  //       { icon: Activity, label: 'Integration Testing', path: '/admin/integration-dashboard' },
+  //       { icon: Globe, label: 'Language Setup', path: '/config/languages' },
+  //       { icon: Settings, label: '⚙️ 3rd Party Configs', path: '/admin/third-party'}
+  //     ]
+  //   },
+  //   {
+  //     title: 'Other Tools',
+  //     items: [
+  //       { icon: FileText, label: 'Page Settings', path: '/tools/pages' },
+  //       { icon: Camera, label: 'Gallery', path: '/tools/gallery' },
+  //       { icon: Cloud, label: 'Backup Database', path: '/tools/backup' }
+  //     ]
+  //   }
+  // ];
 
   const isActive = (path) => location.pathname === path || (path === '/dashboard' && location.pathname === '/');
 
@@ -335,7 +378,7 @@ const ModernSidebar = ({ onLogout }) => {
 
       {/* Navigation Menu */}
       <nav className="flex-1 px-4 py-6">
-        {menuSections.map(renderSection)}
+        {menus.map(renderSection)}
       </nav>
 
       {/* Emergency Button */}

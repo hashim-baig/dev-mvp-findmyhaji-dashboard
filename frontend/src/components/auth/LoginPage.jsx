@@ -42,6 +42,8 @@ const LoginPage = () => {
           const response = await Network.post(Urls.baseUrl +'/auth/login', headers, param);
           if(response?.data?.status === "success"){
             localStorage.setItem('findmyhaji_token', response.data.token);
+            const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours from now
+            localStorage.setItem('findmyhaji_token_expiry', expiresAt);
             localStorage.setItem('findmyhaji_user', JSON.stringify({
               name: response.data.user.name,
               email: credentials.email,
@@ -104,7 +106,7 @@ const LoginPage = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@findmyhaji.com"
+                placeholder="Enter your email"
                 value={credentials.email}
                 onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                 className="bg-slate-50 border-slate-200 focus:border-amber-500 focus:ring-amber-500/20"
@@ -149,15 +151,6 @@ const LoginPage = () => {
               )}
             </Button>
           </form>
-
-          <div className="text-center text-sm text-slate-600">
-            <p className="mb-2">Demo Credentials:</p>
-            <div className="bg-slate-50 p-3 rounded-lg text-left">
-              <p><strong>Email:</strong> admin@findmyhaji.com</p>
-              <p><strong>Password:</strong> admin123</p>
-              <p className="text-xs text-slate-500 mt-1">Admin: Khazi Naseeruddin</p>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
