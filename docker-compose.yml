@@ -22,38 +22,38 @@ services:
       retries: 3
 
   # Node.js Backend API (commented out)
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: findmyhaji-backend
-  #   restart: unless-stopped
-  #   environment:
-  #     NODE_ENV: production
-  #     PORT: 8001
-  #     POSTGRES_HOST: postgres
-  #     POSTGRES_USER: admin
-  #     POSTGRES_PASSWORD: findmyhaji123
-  #     POSTGRES_DB: findmyhaji
-  #     POSTGRES_PORT: 5432
-  #     DATABASE_URL: postgres://admin:findmyhaji123@postgres:5432/findmyhaji
-  #     JWT_SECRET: findmyhaji_jwt_secret_key_2025
-  #     FRONTEND_URL: http://localhost:3000
-  #   ports:
-  #     - "8001:8001"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./backend:/app/backend
-  #     - /app/backend/node_modules
-  #   networks:
-  #     - findmyhaji-network
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
+  backend:
+   build:
+    context: ./backend
+    dockerfile: Dockerfile
+   container_name: findmyhaji-backend
+   restart: unless-stopped
+   environment:
+    NODE_ENV: production
+    PORT: 8001
+    POSTGRES_HOST: postgres
+    POSTGRES_USER: admin
+    POSTGRES_PASSWORD: findmyhaji123
+    POSTGRES_DB: findmyhaji
+    POSTGRES_PORT: 5432
+    DATABASE_URL: postgres://admin:findmyhaji123@postgres:5432/findmyhaji
+    JWT_SECRET: findmyhaji_jwt_secret_key_2025
+    FRONTEND_URL: http://localhost:3000
+   ports:
+    - "8001:8001"
+   depends_on:
+    postgres:
+      condition: service_healthy
+   volumes:
+     - ./backend:/app/backend
+     - /app/backend/node_modules
+   networks:
+     - findmyhaji-network
+   healthcheck:
+     test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+     interval: 30s
+     timeout: 10s
+     retries: 3
 
   # React Frontend
   frontend:
