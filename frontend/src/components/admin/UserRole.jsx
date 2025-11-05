@@ -6,7 +6,7 @@ import {
 import { Urls } from '@/lib/utils';
 import Network from '@/lib/Network';
 
-const RoleManagement = () => {
+const UserRole = () => {
   const [saving, setSaving] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -108,7 +108,7 @@ const RoleManagement = () => {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                Role Management
+                User Role
               </h1>
               <p className="text-gray-600 mt-2">Manage your user role</p>
             </div>
@@ -164,4 +164,4 @@ const RoleManagement = () => {
   );
 };
 
-export default RoleManagement;
+export default UserRole;

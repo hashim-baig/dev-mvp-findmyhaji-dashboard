@@ -1,28 +1,37 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import WebsiteContent from '../models/WebsiteContent.js';
+import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Public route - Get all website content
-router.get('/content', async (req, res) => {
+router.get('/admin/content', authenticate, authorize('1'), async (req, res) => {
   try {
-    const content = await WebsiteContent.find({ isActive: true })
-      .select('section title subtitle content')
-      .lean();
-
+    const content = await WebsiteContent.findAll();
     // Convert to object with section as key for easier frontend access
     const contentMap = {};
     content.forEach(item => {
-      contentMap[item.section] = {
-        title: item.title,
-        subtitle: item.subtitle,
-        content: item.content
-      };
+      if(item.page_type === 'pricing') {
+        contentMap[item.page_type] = {
+          title: item.plans.title,
+          subtitle: item.plans.subtitle,
+          plans: item.plans.content.plans
+        };
+      }else{
+        contentMap[item.page_type] = {
+          title: item.plans === undefined ? item.title : item.plans.title,
+          subtitle: item.plans === undefined ? item.subtitle : item.plans.subtitle,
+          content: item.greeting,
+          p_button_text: item.p_button_text,
+          s_button_text: item.s_button_text,
+          mission: item.mission,
+          vision: item.vision
+        };
+      }
     });
-
-    res.json({
-      success: true,
+    return res.json({
+      success: 'success',
       data: contentMap
     });
 
@@ -35,15 +44,19 @@ router.get('/content', async (req, res) => {
   }
 });
 
-// Admin route - Get all website content for management
-router.get('/admin/content', async (req, res) => {
+// Frontend route - Get website content for particular section
+router.get('/content/:section', async (req, res) => {
   try {
-    const content = await WebsiteContent.find()
-      .sort({ section: 1 })
-      .lean();
+    const page_type = req.params.section;
+    let content;
+    if(!['pricing'].includes(page_type)){
+      content = await WebsiteContent.findOne({ page_type });
+    } else {
+      content = await WebsiteContent.findAllPricing();
+    }
 
-    res.json({
-      success: true,
+    return res.json({
+      success: 'success',
       data: content
     });
 
@@ -57,45 +70,113 @@ router.get('/admin/content', async (req, res) => {
 });
 
 // Admin route - Update website content
-router.put('/admin/content/:section', [
-  body('title').trim().isLength({ min: 1, max: 200 }).withMessage('Title must be between 1-200 characters'),
-  body('subtitle').optional().trim().isLength({ max: 300 }).withMessage('Subtitle must be less than 300 characters'),
-  body('content').isObject().withMessage('Content must be an object'),
-  body('isActive').optional().isBoolean().withMessage('isActive must be a boolean')
-], async (req, res) => {
+const validateContentUpdate = [
+   // HERO
+  body('hero').exists().withMessage('Hero section is required'),
+  body('hero.title')
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage('Hero title is required (1-200 chars)'),
+  body('hero.subtitle')
+    .trim()
+    .isLength({ min: 1, max: 300 })
+    .withMessage('Hero subtitle is required (1-300 chars)'),
+
+  // ABOUT
+  body('about').exists().withMessage('About section is required'),
+  body('about.title')
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage('About title is required'),
+  body('about.subtitle')
+    .trim()
+    .isLength({ min: 1, max: 300 })
+    .withMessage('About subtitle is required'),
+  body('about.content')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('About content is required'),
+
+  // MISSION
+  body('mission').exists().withMessage('Mission section is required'),
+  body('mission.title')
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage('Mission title is required'),
+  body('mission.subtitle')
+    .trim()
+    .isLength({ min: 1, max: 300 })
+    .withMessage('Mission subtitle is required'),
+
+  // PRICING
+  body('pricing').exists().withMessage('Pricing section is required'),
+  body('pricing.title')
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage('Pricing title is required'),
+  body('pricing.subtitle')
+    .trim()
+    .isLength({ min: 1, max: 300 })
+    .withMessage('Pricing subtitle is required'),
+
+  // PLANS
+  body('pricing.plans')
+    .isArray({ min: 1 })
+    .withMessage('Pricing must include at least one plan'),
+
+  body('pricing.plans.*.name')
+    .trim()
+    .isLength({ min: 1, max: 150 })
+    .withMessage('Plan name is required'),
+
+  body('pricing.plans.*.price')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Plan price is required'),
+
+  body('pricing.plans.*.period')
+    .trim()
+    .isLength({ min: 1, max: 150 })
+    .withMessage('Plan period is required'),
+
+  body('pricing.plans.*.features')
+    .isArray({ min: 1 })
+    .withMessage('Each plan must include at least one feature'),
+  body('pricing.plans.*.features.*')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Feature text cannot be empty')
+];
+router.put('/admin/content', authenticate, authorize('1'), validateContentUpdate, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation errors',
-        errors: errors.array()
+        message: 'Validation failed',
+        errorCount: errors.array().length,
+        errors: errors.array().map(err => ({
+          field: err.path,
+          message: err.msg,
+          value: err.value
+        }))
       });
     }
 
-    const { title, subtitle, content, isActive } = req.body;
-    const section = req.params.section;
-
-    const updateData = {
-      section,
-      title,
-      subtitle: subtitle || '',
-      content,
-      isActive: isActive !== undefined ? isActive : true,
-      lastUpdatedBy: 'admin' // In real app, get from authenticated user
-    };
-
-    const websiteContent = await WebsiteContent.findOneAndUpdate(
-      { section },
-      updateData,
-      { new: true, upsert: true, runValidators: true }
+    const result = await WebsiteContent.findOneAndUpdate(
+      { contentData: req.body }
     );
-
-    res.json({
-      success: true,
-      message: 'Website content updated successfully',
-      data: websiteContent
-    });
+    if (result === true) {
+      return res.json({
+        success: 'success',
+        message: 'Website content updated successfully'
+      });
+    }else{
+      return res.status(500).json({
+        success: false,
+        message: result.message
+      });
+    }
 
   } catch (error) {
     console.error('Error updating website content:', error);

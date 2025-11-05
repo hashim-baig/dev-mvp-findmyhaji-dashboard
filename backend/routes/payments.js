@@ -39,9 +39,9 @@ const PAYMENT_PACKAGES = {
 // Import emergentintegrations for Stripe
 let StripeCheckout, CheckoutSessionRequest;
 try {
-  const stripeModule = await import('emergentintegrations/payments/stripe/checkout');
-  StripeCheckout = stripeModule.StripeCheckout;
-  CheckoutSessionRequest = stripeModule.CheckoutSessionRequest;
+  const stripeModule = '';//await import('emergentintegrations/payments/stripe/checkout');
+  StripeCheckout = '';//stripeModule.StripeCheckout;
+  CheckoutSessionRequest = {};//stripeModule.CheckoutSessionRequest;
 } catch (error) {
   console.error('Failed to import Stripe integration:', error);
 }

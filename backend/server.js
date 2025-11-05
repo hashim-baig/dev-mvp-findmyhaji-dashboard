@@ -21,6 +21,7 @@ const __dirname = dirname(__filename);
 // Import routes
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
+import customerRoutes from './routes/customers.js';
 import menu from './routes/menu.js';
 import roleRoutes from './routes/roles.js';
 import pilgrimsRoutes from './routes/pilgrims.js';
@@ -519,6 +520,7 @@ app.get('/api/landing-page', (req, res) => {
 
 // API Routes
 app.use('/api/users', userRoutes);
+app.use('/api/customers', customerRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/menus', menu);
 app.use('/api/auth', authRoutes);
@@ -548,6 +550,7 @@ app.get('/api', (req, res) => {
     timestamp: new Date().toISOString(),
     endpoints: {
       auth: '/api/auth',
+      customers: '/api/customers',
       users: '/api/users',
       roles: '/api/roles',
       pilgrims: '/api/pilgrims',

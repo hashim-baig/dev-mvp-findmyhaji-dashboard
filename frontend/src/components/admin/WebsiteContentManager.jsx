@@ -15,6 +15,8 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import Network from '@/lib/Network';
+import { Urls } from '@/lib/utils';
 
 const WebsiteContentManager = () => {
   const [content, setContent] = useState({});
@@ -38,14 +40,19 @@ const WebsiteContentManager = () => {
 
   const fetchContent = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/website/admin/content`);
-      const data = await response.json();
-      
-      if (data.success) {
-        // Convert array to object with section as key
+      const token = localStorage.getItem('findmyhaji_token');
+        const headers =  {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+        
+      const response = await Network.get(Urls.baseUrl +'/website/admin/content', headers);
+      if (response.data.success === 'success') {
+        const data = response.data.data;
         const contentMap = {};
-        data.data.forEach(item => {
-          contentMap[item.section] = item;
+        // Loop through object keys instead of array
+        Object.keys(data).forEach(section => {
+          contentMap[section] = data[section];
         });
         setContent(contentMap);
       }
@@ -57,30 +64,30 @@ const WebsiteContentManager = () => {
     }
   };
 
-  const updateContent = async (section, updates) => {
+  const updateContent = async (updates) => {
     setSaving(true);
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/website/admin/content/${section}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updates)
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setContent(prev => ({
-          ...prev,
-          [section]: data.data
-        }));
-        setMessage({ type: 'success', text: 'Content updated successfully!' });
+      const token = localStorage.getItem('findmyhaji_token');
+        const headers =  {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
         
+      const response = await Network.put('/website/admin/content', headers, JSON.stringify(updates));
+      
+      if (response.data.success === 'success') {
+        setMessage({ type: 'success', text: 'Content updated successfully!' });
         // Clear message after 3 seconds
         setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      } else if(response.data.message === 'Validation failed') {
+        const backendErrors = response.data.errors;
+
+        const formatted = backendErrors
+          .map((e) => `${e.field}: ${e.message}`)
+          .join("\n");
+        setMessage({ type: "error", text: formatted });
       } else {
-        setMessage({ type: 'error', text: data.message || 'Failed to update content' });
+        setMessage({ type: 'error', text: response.data.message || 'Failed to update content' });
       }
     } catch (error) {
       console.error('Error updating content:', error);
@@ -89,6 +96,16 @@ const WebsiteContentManager = () => {
       setSaving(false);
     }
   };
+  const handleChange = (section, updates) => {
+    setContent(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        ...updates
+      }
+    }));
+    
+  }
 
   const openLandingPage = () => {
     window.open('/landing', '_blank');
@@ -106,10 +123,7 @@ const WebsiteContentManager = () => {
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               value={heroContent.title || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                hero: { ...prev.hero, title: e.target.value }
-              }))}
+              onChange={(e) => handleChange('hero',{title: e.target.value})}
               placeholder="Your Pilgrimage. Connected."
             />
           </div>
@@ -118,14 +132,8 @@ const WebsiteContentManager = () => {
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-              value={heroContent.content?.greeting || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                hero: {
-                  ...prev.hero,
-                  content: { ...prev.hero?.content, greeting: e.target.value }
-                }
-              }))}
+              value={heroContent.content || ''}
+              onChange={(e) => handleChange('hero',{content: e.target.value})}
               placeholder="Assalāmu 'Alaikum wa Rahmatullāhi wa Barakātuh"
             />
           </div>
@@ -137,10 +145,7 @@ const WebsiteContentManager = () => {
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             rows={3}
             value={heroContent.subtitle || ''}
-            onChange={(e) => setContent(prev => ({
-              ...prev,
-              hero: { ...prev.hero, subtitle: e.target.value }
-            }))}
+            onChange={(e) => handleChange('hero',{subtitle: e.target.value})}
             placeholder="Experience peace of mind during your sacred journey..."
           />
         </div>
@@ -151,14 +156,8 @@ const WebsiteContentManager = () => {
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-              value={heroContent.content?.primaryButton || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                hero: {
-                  ...prev.hero,
-                  content: { ...prev.hero?.content, primaryButton: e.target.value }
-                }
-              }))}
+              value={heroContent.p_button_text || ''}
+              onChange={(e) => handleChange('hero',{p_button_text: e.target.value})}
               placeholder="Download App"
             />
           </div>
@@ -167,20 +166,14 @@ const WebsiteContentManager = () => {
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-              value={heroContent.content?.secondaryButton || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                hero: {
-                  ...prev.hero,
-                  content: { ...prev.hero?.content, secondaryButton: e.target.value }
-                }
-              }))}
+              value={heroContent.s_button_text || ''}
+              onChange={(e) => handleChange('hero',{s_button_text: e.target.value})}
               placeholder="Learn More"
             />
           </div>
         </div>
 
-        <div className="bg-yellow-50 p-4 rounded-lg">
+        {/*<div className="bg-yellow-50 p-4 rounded-lg">
           <h4 className="font-medium text-gray-900 mb-2">Hero Images</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -200,7 +193,7 @@ const WebsiteContentManager = () => {
               <p className="text-sm text-gray-600 mt-1">Nabawi Mosque (Section Background)</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -217,10 +210,7 @@ const WebsiteContentManager = () => {
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               value={aboutContent.title || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                about: { ...prev.about, title: e.target.value }
-              }))}
+              onChange={(e) => handleChange('about',{title: e.target.value})}
               placeholder="What is FindMyHaji?"
             />
           </div>
@@ -230,10 +220,7 @@ const WebsiteContentManager = () => {
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               value={aboutContent.subtitle || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                about: { ...prev.about, subtitle: e.target.value }
-              }))}
+              onChange={(e) => handleChange('about',{subtitle: e.target.value})}
               placeholder="Connecting hearts and souls across distances..."
             />
           </div>
@@ -244,19 +231,13 @@ const WebsiteContentManager = () => {
           <textarea
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             rows={4}
-            value={aboutContent.content?.description || ''}
-            onChange={(e) => setContent(prev => ({
-              ...prev,
-              about: {
-                ...prev.about,
-                content: { ...prev.about?.content, description: e.target.value }
-              }
-            }))}
+            value={aboutContent.content || ''}
+            onChange={(e) => handleChange('about',{content: e.target.value})}
             placeholder="FindMyHaji was born from a simple yet profound need..."
           />
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg">
+        {/* <div className="bg-blue-50 p-4 rounded-lg">
           <h4 className="font-medium text-gray-900 mb-2">Feature Images</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
@@ -292,7 +273,7 @@ const WebsiteContentManager = () => {
               <p className="text-xs text-gray-600 mt-1">Family Updates</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -309,10 +290,7 @@ const WebsiteContentManager = () => {
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               value={missionContent.title || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                mission: { ...prev.mission, title: e.target.value }
-              }))}
+              onChange={(e) => handleChange('mission',{title: e.target.value})}
               placeholder="Our Mission & Vision"
             />
           </div>
@@ -322,10 +300,7 @@ const WebsiteContentManager = () => {
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               value={missionContent.subtitle || ''}
-              onChange={(e) => setContent(prev => ({
-                ...prev,
-                mission: { ...prev.mission, subtitle: e.target.value }
-              }))}
+              onChange={(e) => handleChange('mission',{subtitle: e.target.value})}
               placeholder="Guided by faith, empowered by technology"
             />
           </div>
@@ -336,14 +311,8 @@ const WebsiteContentManager = () => {
           <textarea
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             rows={3}
-            value={missionContent.content?.mission || ''}
-            onChange={(e) => setContent(prev => ({
-              ...prev,
-              mission: {
-                ...prev.mission,
-                content: { ...prev.mission?.content, mission: e.target.value }
-              }
-            }))}
+            value={missionContent.mission || ''}
+            onChange={(e) => handleChange('mission',{mission: e.target.value})}
             placeholder="To provide peace of mind to pilgrims and their families..."
           />
         </div>
@@ -353,14 +322,8 @@ const WebsiteContentManager = () => {
           <textarea
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             rows={3}
-            value={missionContent.content?.vision || ''}
-            onChange={(e) => setContent(prev => ({
-              ...prev,
-              mission: {
-                ...prev.mission,
-                content: { ...prev.mission?.content, vision: e.target.value }
-              }
-            }))}
+            value={missionContent.vision || ''}
+            onChange={(e) => handleChange('mission',{vision: e.target.value})}
             placeholder="To be the most trusted companion for Muslim pilgrims worldwide..."
           />
         </div>
@@ -370,7 +333,7 @@ const WebsiteContentManager = () => {
 
   const renderPricingEditor = () => {
     const pricingContent = content.pricing || {};
-    const plans = pricingContent.content?.plans || [];
+    const plans = pricingContent?.plans || [];
     
     return (
       <div className="space-y-6">
@@ -421,7 +384,7 @@ const WebsiteContentManager = () => {
                         ...prev,
                         pricing: {
                           ...prev.pricing,
-                          content: { ...prev.pricing?.content, plans: updatedPlans }
+                          ...prev.pricing?.content, plans: updatedPlans
                         }
                       }));
                     }}
@@ -432,7 +395,7 @@ const WebsiteContentManager = () => {
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                    value={plan.price || ''}
+                    value={plan.price}
                     onChange={(e) => {
                       const updatedPlans = [...plans];
                       updatedPlans[index] = { ...plan, price: e.target.value };
@@ -440,7 +403,7 @@ const WebsiteContentManager = () => {
                         ...prev,
                         pricing: {
                           ...prev.pricing,
-                          content: { ...prev.pricing?.content, plans: updatedPlans }
+                          ...prev.pricing?.content, plans: updatedPlans
                         }
                       }));
                     }}
@@ -459,7 +422,7 @@ const WebsiteContentManager = () => {
                         ...prev,
                         pricing: {
                           ...prev.pricing,
-                          content: { ...prev.pricing?.content, plans: updatedPlans }
+                          ...prev.pricing?.content, plans: updatedPlans
                         }
                       }));
                     }}
@@ -476,13 +439,13 @@ const WebsiteContentManager = () => {
                     const updatedPlans = [...plans];
                     updatedPlans[index] = { 
                       ...plan, 
-                      features: e.target.value.split('\n').filter(f => f.trim()) 
+                      features: e.target.value.split('\n') 
                     };
                     setContent(prev => ({
                       ...prev,
                       pricing: {
                         ...prev.pricing,
-                        content: { ...prev.pricing?.content, plans: updatedPlans }
+                        ...prev.pricing?.content, plans: updatedPlans
                       }
                     }));
                   }}
@@ -513,7 +476,7 @@ const WebsiteContentManager = () => {
   const handleSave = () => {
     const sectionContent = content[activeSection];
     if (sectionContent) {
-      updateContent(activeSection, sectionContent);
+      updateContent(content);
     }
   };
 
@@ -566,7 +529,7 @@ const WebsiteContentManager = () => {
             <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${
               message.type === 'success' 
                 ? 'bg-green-100 text-green-700' 
-                : 'bg-red-100 text-red-700'
+                : 'bg-red-100 text-red-700 whitespace-pre-line'
             }`}>
               {message.type === 'success' ? (
                 <CheckCircle className="w-5 h-5" />

@@ -18,9 +18,11 @@ import BlogManagement from "./components/admin/BlogManagement";
 import PushNotificationConfig from "./components/admin/PushNotificationConfig";
 import ThirdPartyConfigurations from "./components/admin/ThirdPartyConfigurations";
 import IntegrationDashboard from "./components/admin/IntegrationDashboard";
-import RoleManagement from "./components/customers/RoleManagement";
+import UserRole from "./components/admin/UserRole";
 import CustomerList from "./components/customers/CustomerList";
 import RoleMaster from "./components/admin/RoleMaster";
+import PermissionManagement from "./components/admin/PermissionManagement";
+import IndexSection from "./components/frontend/IndexSection";
 
 // Website redirect component
 const WebsiteRedirect = () => {
@@ -163,16 +165,8 @@ function App() {
               <ProviderDashboard />
             </ProviderProtectedRoute>
           } />
-          
+
           {/* Admin Protected Routes */}
-          <Route path="/" element={
-            <ProtectedRoute>
-              <ModernLayout>
-                <ModernDashboard />
-              </ModernLayout>
-            </ProtectedRoute>
-          } />
-          
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <ModernLayout>
@@ -337,15 +331,29 @@ function App() {
               </ModernLayout>
             </ProtectedRoute>
           } />
-
-          {/* Employee Management placeholder routes */}
-          {/* <Route path="/employees/roles" element={
+          <Route path="/system/roles" element={
             <ProtectedRoute>
               <ModernLayout>
-                <RoleManagement/>
+                <RoleMaster/>
               </ModernLayout>
             </ProtectedRoute>
-          } /> */}
+          } />
+
+          {/* Assign User Role routes */}
+          <Route path="/system/user/role" element={
+            <ProtectedRoute>
+              <ModernLayout>
+                <UserRole/>
+              </ModernLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/system/permissions" element={
+            <ProtectedRoute>
+              <ModernLayout>
+                <PermissionManagement/>
+              </ModernLayout>
+            </ProtectedRoute>
+          } />
 
           <Route path="/customers/list" element={
             <ProtectedRoute>
@@ -354,7 +362,35 @@ function App() {
               </ModernLayout>
             </ProtectedRoute>
           } />
-
+          {/* Route for frontend */}
+          {/* Home Route */}
+          <Route path="/" element={
+                <IndexSection />
+          } />
+          {/* About Route */}
+          <Route path="/about-us" element={
+                <IndexSection />
+          } />
+          {/* Mission Route */}
+          <Route path="/mission" element={
+                <IndexSection />
+          } />
+          {/* Pricing Route */}
+          <Route path="/pricing" element={
+                <IndexSection />
+          } />
+          {/* Features Route */}
+          <Route path="/features" element={
+                <IndexSection />
+          } />
+          {/* Blogs Route */}
+          <Route path="/blogs" element={
+                <IndexSection />
+          } />
+          {/* Contact Us Route */}
+          <Route path="/contact-us" element={
+                <IndexSection />
+          } />
           {/* Catch all route - redirect to dashboard */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
