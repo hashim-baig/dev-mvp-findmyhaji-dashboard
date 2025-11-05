@@ -25,7 +25,6 @@ const RoleMaster = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDetails, setShowDetails] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const [errors, setErrors] = useState({});
 

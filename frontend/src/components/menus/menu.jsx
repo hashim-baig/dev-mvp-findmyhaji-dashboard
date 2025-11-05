@@ -10,7 +10,7 @@ async function getMenus() {
         'Authorization': `Bearer ${token}`,
       };
       
-      const response = await Network.get(Urls.baseUrl + '/menus', headers);
+      const response = await Network.get(Urls.baseUrl + '/menus/sidemenu', headers);
       if (response?.data?.success === 'success') {
         return response.data.data;
       } else {

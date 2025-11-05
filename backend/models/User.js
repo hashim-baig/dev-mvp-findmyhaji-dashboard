@@ -380,6 +380,28 @@ class User {
     if (result.rows.length === 0) return null;
     return new User(result.rows[0]);
   }
+  static async login({email,role}) {
+    let whereClause = [];
+    let values = [];
+    let idx = 1;
+
+    if (email) {
+      whereClause.push(`email = $${idx++}`);
+      values.push(email);
+    }
+    whereClause.push(`role = $${idx++}`);
+    values.push(role);
+
+    if (whereClause.length === 0) {
+      throw new Error('At least one identifier (email) must be provided');
+    }
+
+    const query = `SELECT * FROM users WHERE ${whereClause.join(' AND ')} LIMIT 1`;
+    const result = await dbPool.query(query, values);
+
+    if (result.rows.length === 0) return null;
+    return result.rows[0];
+  }
 
 }
 

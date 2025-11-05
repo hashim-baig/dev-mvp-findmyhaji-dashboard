@@ -83,5 +83,56 @@ const Network = {
       });
   }
 };
+const NetworkFront = {
+  get: (url, headers = {}) => {
+    return axios.get(url, { headers })
+      .then((response) => response)
+      .catch((error) => error);
+  },
+  post: (path, headers, parameters) => {
+    // if(!path.includes('login')){
+    //     isTokenExpire();
+    // }
+    return axios.create({
+        baseURL: path,
+        headers,
+    }).post(path,parameters)
+              .then(function (response) { return response })
+              .catch(function (error) {
+                if (error.response) {
+                return error.response;
+                }
+                return { error: error };
+            });
+      
+  },
+  put: (path, headers, parameters) => {
+    // isTokenExpire();
+    return axios.create({
+      baseURL: Urls.baseUrl+path,
+      headers,
+    })
+      .put(Urls.baseUrl+path, parameters)
+      .then(response => response)
+      .catch(error => {
+        if (error.response) {
+          return error.response;
+        }
+        return { error };
+      });
+  },
+  delete: (url, headers) => {
+    // isTokenExpire();
+    return axios.delete(url, { headers })
+      .then((response) => response)
+      .catch(error => {
+        if (error.response) {
+          return error.response;
+        }
+        return { error };
+      });
+  }
+};
 
 export default Network;
+export {NetworkFront};
